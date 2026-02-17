@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dynamis Académie — Générateur de Livrable</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:       #0a0c0f;
+  --s1:       #111318;
+  --s2:       #181c24;
+  --s3:       #1f2330;
+  --border:   rgba(255,255,255,0.07);
+  --gold:     #c9a96e;
+  --gold-d:   #7a5e35;
+  --gold-g:   rgba(201,169,110,0.12);
+  --text:     #e8e4dc;
+  --muted:    #606068;
+  --green:    #4ade80;
+  --red:      #f87171;
+  --blue:     #60a5fa;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* grain */
+body::after {
+  content:''; position:fixed; inset:0;
+  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  pointer-events:none; z-index:9999;
+}
+
+/* ── SIDEBAR ── */
+.app { display: flex; min-height: 100vh; }
+
+.sidebar {
+  width: 280px; flex-shrink: 0;
+  background: var(--s1);
+  border-right: 1px solid var(--border);
+  padding: 40px 32px;
+  display: flex; flex-direction: column;
+  position: sticky; top: 0; height: 100vh;
+  overflow-y: auto;
+}
+
+.brand {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px; font-weight: 300;
+  color: var(--gold); letter-spacing: 1px;
+  margin-bottom: 6px;
+}
+.brand-sub {
+  font-size: 9px; letter-spacing: 3px;
+  text-transform: uppercase; color: var(--muted);
+  margin-bottom: 40px;
+}
+
+.nav-section {
+  font-size: 9px; letter-spacing: 3px;
+  text-transform: uppercase; color: var(--muted);
+  margin-bottom: 12px; margin-top: 28px;
+}
+.nav-section:first-of-type { margin-top: 0; }
+
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 12px; border-radius: 3px;
+  font-size: 13px; color: var(--muted);
+  cursor: pointer; transition: all 0.2s;
+  margin-bottom: 2px; user-select: none;
+}
+.nav-item:hover { background: var(--s2); color: var(--text); }
+.nav-item.active { background: var(--gold-g); color: var(--gold); border-left: 2px solid var(--gold); }
+.nav-item .dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--muted); flex-shrink: 0; transition: background 0.2s;
+}
+.nav-item.active .dot { background: var(--gold); }
+.nav-item.done .dot  { background: var(--green); }
+.nav-item.done { color: var(--muted); }
+
+.sidebar-footer {
+  margin-top: auto; padding-top: 32px;
+  border-top: 1px solid var(--border);
+  font-size: 11px; color: var(--muted);
+  line-height: 1.5;
+}
+
+/* ── MAIN ── */
+.main { flex: 1; padding: 60px; max-width: 860px; }
+
+/* ── STEP ── */
+.step { display: none; }
+.step.active { display: block; }
+
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(16px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+.step.active { animation: fadeUp 0.4s ease both; }
+
+.step-eyebrow {
+  font-size: 9px; letter-spacing: 4px;
+  text-transform: uppercase; color: var(--gold);
+  margin-bottom: 16px;
+}
+.step-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 42px; font-weight: 300; line-height: 1.1;
+  margin-bottom: 10px;
+}
+.step-title em { font-style: italic; color: var(--gold); }
+.step-desc {
+  font-size: 13px; color: var(--muted);
+  margin-bottom: 48px; max-width: 520px;
+}
+
+/* ── FORM ── */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px; margin-bottom: 20px;
+}
+.form-grid.one { grid-template-columns: 1fr; }
+.form-grid.three { grid-template-columns: 1fr 1fr 1fr; }
+
+.field { display: flex; flex-direction: column; gap: 8px; }
+.field.span2 { grid-column: span 2; }
+
+label {
+  font-size: 9px; letter-spacing: 3px;
+  text-transform: uppercase; color: var(--muted);
+}
+
+input, select, textarea {
+  background: var(--s2);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  padding: 12px 16px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px; font-weight: 300;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.2s, background 0.2s;
+  width: 100%;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: var(--gold-d);
+  background: var(--s3);
+}
+input::placeholder, textarea::placeholder { color: var(--muted); }
+select option { background: var(--s2); }
+textarea { resize: vertical; min-height: 80px; }
+
+/* ── SECTION HEADER dans form ── */
+.form-section-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px; font-weight: 300; color: var(--text);
+  margin: 36px 0 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 14px;
+}
+.form-section-title::before {
+  content:''; width: 24px; height: 1px; background: var(--gold); flex-shrink:0;
+}
+
+/* ── ACTIONS BUILDER ── */
+.actions-builder { margin-top: 0; }
+
+.action-row {
+  background: var(--s2);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  padding: 16px 20px;
+  margin-bottom: 8px;
+  display: grid;
+  grid-template-columns: 1fr 160px 120px 100px 36px;
+  gap: 12px; align-items: center;
+  transition: border-color 0.2s;
+}
+.action-row:hover { border-color: var(--gold-d); }
+.action-row input, .action-row select { margin: 0; padding: 8px 12px; font-size: 12px; }
+
+.btn-remove {
+  width: 32px; height: 32px;
+  background: rgba(248,113,113,0.08);
+  border: 1px solid rgba(248,113,113,0.15);
+  border-radius: 2px; color: var(--red);
+  cursor: pointer; font-size: 16px;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s; flex-shrink: 0;
+}
+.btn-remove:hover { background: rgba(248,113,113,0.18); }
+
+.btn-add {
+  background: transparent;
+  border: 1px dashed var(--border);
+  border-radius: 2px;
+  padding: 12px 20px;
+  color: var(--muted); font-size: 12px;
+  cursor: pointer; width: 100%;
+  font-family: 'DM Sans', sans-serif;
+  letter-spacing: 1px;
+  transition: all 0.2s; margin-top: 4px;
+}
+.btn-add:hover { border-color: var(--gold-d); color: var(--gold); background: var(--gold-g); }
+
+/* ── CONCURRENTS BUILDER ── */
+.concurrent-row {
+  background: var(--s2);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  padding: 12px 16px;
+  margin-bottom: 6px;
+  display: grid;
+  grid-template-columns: 1.2fr 1.4fr 0.8fr 80px 36px;
+  gap: 10px; align-items: center;
+}
+.concurrent-row input, .concurrent-row select { padding: 8px 10px; font-size: 12px; margin: 0; }
+
+/* ── COMMUNES BUILDER ── */
+.commune-row {
+  background: var(--s2);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  padding: 10px 14px;
+  margin-bottom: 6px;
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 36px;
+  gap: 10px; align-items: center;
+}
+.commune-row input { padding: 8px 10px; font-size: 12px; margin: 0; }
+
+/* ── BUTTONS ── */
+.btn-row { display: flex; gap: 12px; margin-top: 48px; align-items: center; }
+
+.btn-primary {
+  background: var(--gold);
+  color: #0a0c0f;
+  border: none; border-radius: 2px;
+  padding: 14px 32px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px; font-weight: 500;
+  letter-spacing: 2px; text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.25s;
+}
+.btn-primary:hover { background: #e0c080; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(201,169,110,0.25); }
+
+.btn-secondary {
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  padding: 13px 24px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px; letter-spacing: 1px;
+  cursor: pointer; transition: all 0.2s;
+}
+.btn-secondary:hover { border-color: var(--muted); color: var(--text); }
+
+/* ── PREVIEW / GENERATE ── */
+.generate-box {
+  background: var(--s1);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  padding: 48px;
+  text-align: center;
+  margin-bottom: 32px;
+}
+.generate-icon {
+  font-size: 48px; margin-bottom: 20px;
+  filter: grayscale(0.3);
+}
+.generate-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px; font-weight: 300;
+  color: var(--text); margin-bottom: 8px;
+}
+.generate-desc { font-size: 13px; color: var(--muted); margin-bottom: 32px; }
+
+.btn-generate {
+  background: linear-gradient(135deg, var(--gold-d), var(--gold));
+  color: #0a0c0f;
+  border: none; border-radius: 2px;
+  padding: 18px 48px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px; font-weight: 500;
+  letter-spacing: 3px; text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 4px 24px rgba(201,169,110,0.2);
+}
+.btn-generate:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 40px rgba(201,169,110,0.35);
+}
+
+.checklist {
+  text-align: left; max-width: 420px;
+  margin: 0 auto 32px;
+}
+.check-item {
+  display: flex; gap: 12px; align-items: flex-start;
+  padding: 10px 0; border-bottom: 1px solid var(--border);
+  font-size: 13px; color: var(--muted);
+}
+.check-item:last-child { border-bottom: none; }
+.check-item .ck { color: var(--green); flex-shrink: 0; margin-top: 1px; }
+.check-item .ck.pending { color: var(--muted); }
+
+/* ── TOOLTIP ── */
+.tooltip {
+  font-size: 10px; color: var(--muted);
+  font-style: italic; margin-top: 4px;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  .sidebar { display: none; }
+  .main { padding: 32px 24px; }
+  .form-grid { grid-template-columns: 1fr; }
+  .form-grid.three { grid-template-columns: 1fr 1fr; }
+  .action-row { grid-template-columns: 1fr; }
+  .concurrent-row { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ═══ SIDEBAR ═══ -->
+  <aside class="sidebar">
+    <div class="brand">Dynamis Académie</div>
+    <div class="brand-sub">Générateur de livrable R1</div>
+
+    <div class="nav-section">Étapes</div>
+    <div class="nav-item active" id="nav-1" onclick="goStep(1)">
+      <div class="dot"></div> Infos client
+    </div>
+    <div class="nav-item" id="nav-2" onclick="goStep(2)">
+      <div class="dot"></div> Chiffres clés
+    </div>
+    <div class="nav-item" id="nav-3" onclick="goStep(3)">
+      <div class="dot"></div> Zone isochrone
+    </div>
+    <div class="nav-item" id="nav-4" onclick="goStep(4)">
+      <div class="dot"></div> Concurrents
+    </div>
+    <div class="nav-item" id="nav-5" onclick="goStep(5)">
+      <div class="dot"></div> Plan d'action
+    </div>
+    <div class="nav-item" id="nav-6" onclick="goStep(6)">
+      <div class="dot"></div> Générer
+    </div>
+
+    <div class="sidebar-footer">
+      Aucune donnée envoyée.<br>
+      Tout reste sur votre machine.
+    </div>
+  </aside>
+
+  <!-- ═══ MAIN ═══ -->
+  <main class="main">
+
+    <!-- ─── STEP 1 : INFOS CLIENT ─── -->
+    <section class="step active" id="step-1">
+      <div class="step-eyebrow">Étape 1 / 6</div>
+      <h1 class="step-title">Informations<br><em>client</em></h1>
+      <p class="step-desc">Identité du magasin et du dirigeant. Ces données apparaîtront en en-tête du livrable.</p>
+
+      <div class="form-grid">
+        <div class="field">
+          <label>Nom du magasin</label>
+          <input id="f_magasin" type="text" placeholder="L'Opticien de Poisy" value="L'Opticien de Poisy">
+        </div>
+        <div class="field">
+          <label>Prénom & Nom du dirigeant</label>
+          <input id="f_dirigeant" type="text" placeholder="Philippe Lyonnaz-Perroux" value="Philippe Lyonnaz-Perroux">
+        </div>
+        <div class="field">
+          <label>Ville / Localisation</label>
+          <input id="f_ville" type="text" placeholder="Poisy" value="Poisy">
+        </div>
+        <div class="field">
+          <label>Code postal</label>
+          <input id="f_cp" type="text" placeholder="74330" value="74330">
+        </div>
+        <div class="field">
+          <label>Statut</label>
+          <select id="f_statut">
+            <option value="Indépendant" selected>Indépendant</option>
+            <option value="Franchise">Franchise</option>
+            <option value="Coopérative">Coopérative</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Email contact</label>
+          <input id="f_email" type="text" placeholder="contact@lopticiende..." value="contact@lopticiendepoisy.fr">
+        </div>
+        <div class="field span2">
+          <label>Note Google My Business (sur 5)</label>
+          <input id="f_note_google" type="number" step="0.1" min="1" max="5" placeholder="4.7" value="4.7">
+          <span class="tooltip">Saisir la note actuelle visible sur Google Maps</span>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-primary" onclick="goStep(2)">Suivant →</button>
+      </div>
+    </section>
+
+    <!-- ─── STEP 2 : CHIFFRES CLÉS ─── -->
+    <section class="step" id="step-2">
+      <div class="step-eyebrow">Étape 2 / 6</div>
+      <h1 class="step-title">Chiffres<br><em>clés</em></h1>
+      <p class="step-desc">Performance actuelle du magasin. Servent à calculer l'écart avec le potentiel marché.</p>
+
+      <div class="form-section-title">Résultats financiers</div>
+      <div class="form-grid three">
+        <div class="field">
+          <label>CA annuel (€)</label>
+          <input id="f_ca" type="number" placeholder="140000" value="140000">
+        </div>
+        <div class="field">
+          <label>Panier moyen global (€)</label>
+          <input id="f_panier" type="number" placeholder="450" value="450">
+        </div>
+        <div class="field">
+          <label>Marge brute (%)</label>
+          <input id="f_marge" type="number" placeholder="63" value="63">
+        </div>
+      </div>
+
+      <div class="form-section-title">Indicateurs commerciaux</div>
+      <div class="form-grid three">
+        <div class="field">
+          <label>Taux de transformation (sur 10)</label>
+          <input id="f_transfo" type="number" step="0.1" placeholder="9" value="9">
+        </div>
+        <div class="field">
+          <label>Taux 2ème paire (%)</label>
+          <input id="f_deuxieme" type="number" placeholder="80" value="80">
+        </div>
+        <div class="field">
+          <label>Évolution CA</label>
+          <select id="f_evolution">
+            <option value="Stagnant" selected>Stagnant</option>
+            <option value="En hausse">En hausse</option>
+            <option value="En baisse">En baisse</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-section-title">Données de marché national</div>
+      <div class="form-grid three">
+        <div class="field">
+          <label>CA moyen indépendant France (€)</label>
+          <input id="f_moy_ca" type="number" placeholder="350000" value="350000">
+          <span class="tooltip">Source PropulsebyCA 2025</span>
+        </div>
+        <div class="field">
+          <label>Panier moyen national (€)</label>
+          <input id="f_moy_panier" type="number" placeholder="403" value="403">
+        </div>
+        <div class="field">
+          <label>Dépense optique / hab. / an (€)</label>
+          <input id="f_dep_hab" type="number" placeholder="111" value="111">
+          <span class="tooltip">Source Octika/GfK 2025</span>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-secondary" onclick="goStep(1)">← Retour</button>
+        <button class="btn-primary" onclick="goStep(3)">Suivant →</button>
+      </div>
+    </section>
+
+    <!-- ─── STEP 3 : ZONE ─── -->
+    <section class="step" id="step-3">
+      <div class="step-eyebrow">Étape 3 / 6</div>
+      <h1 class="step-title">Zone<br><em>isochrone</em></h1>
+      <p class="step-desc">Communes dans les 15 min en voiture. La somme des populations calcule automatiquement le potentiel brut.</p>
+
+      <div id="communes-list"></div>
+      <button class="btn-add" onclick="addCommune()">+ Ajouter une commune</button>
+
+      <div style="margin-top: 28px; background: var(--s2); border: 1px solid var(--border); padding: 20px 24px; display: flex; gap: 40px;">
+        <div>
+          <div style="font-size:9px; letter-spacing:3px; text-transform:uppercase; color:var(--muted); margin-bottom:6px;">Population totale</div>
+          <div id="pop-total" style="font-family:'Cormorant Garamond',serif; font-size:32px; color:var(--text);">0</div>
+        </div>
+        <div>
+          <div style="font-size:9px; letter-spacing:3px; text-transform:uppercase; color:var(--muted); margin-bottom:6px;">Potentiel brut</div>
+          <div id="pot-brut" style="font-family:'Cormorant Garamond',serif; font-size:32px; color:var(--gold);">0 €</div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-secondary" onclick="goStep(2)">← Retour</button>
+        <button class="btn-primary" onclick="goStep(4)">Suivant →</button>
+      </div>
+    </section>
+
+    <!-- ─── STEP 4 : CONCURRENTS ─── -->
+    <section class="step" id="step-4">
+      <div class="step-eyebrow">Étape 4 / 6</div>
+      <h1 class="step-title">Concurrents<br><em>identifiés</em></h1>
+      <p class="step-desc">Tous les opticiens de la zone (enseignes + indépendants). La part de marché réaliste est calculée automatiquement.</p>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:10px; padding:0 16px;">
+        <span style="font-size:9px; letter-spacing:2px; text-transform:uppercase; color:var(--muted);">Nom</span>
+        <span style="font-size:9px; letter-spacing:2px; text-transform:uppercase; color:var(--muted);">Type</span>
+        <span style="font-size:9px; letter-spacing:2px; text-transform:uppercase; color:var(--muted);">Ville / Note</span>
+      </div>
+
+      <div id="concurrent-list"></div>
+      <button class="btn-add" onclick="addConcurrent()">+ Ajouter un concurrent</button>
+
+      <div style="margin-top:24px; background:var(--s2); border:1px solid var(--border); padding:20px 24px; display:flex; gap:40px; flex-wrap:wrap;">
+        <div>
+          <div style="font-size:9px; letter-spacing:3px; text-transform:uppercase; color:var(--muted); margin-bottom:6px;">Nb acteurs total (avec client)</div>
+          <div id="nb-acteurs" style="font-family:'Cormorant Garamond',serif; font-size:32px; color:var(--text);">0</div>
+        </div>
+        <div>
+          <div style="font-size:9px; letter-spacing:3px; text-transform:uppercase; color:var(--muted); margin-bottom:6px;">Part équitable théorique</div>
+          <div id="part-equitable" style="font-family:'Cormorant Garamond',serif; font-size:32px; color:var(--gold);">0 %</div>
+        </div>
+        <div>
+          <div style="font-size:9px; letter-spacing:3px; text-transform:uppercase; color:var(--muted); margin-bottom:6px;">Part cible réaliste (×0.85)</div>
+          <div id="part-cible" style="font-family:'Cormorant Garamond',serif; font-size:32px; color:var(--green);">0 %</div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-secondary" onclick="goStep(3)">← Retour</button>
+        <button class="btn-primary" onclick="goStep(5)">Suivant →</button>
+      </div>
+    </section>
+
+    <!-- ─── STEP 5 : PLAN D'ACTION ─── -->
+    <section class="step" id="step-5">
+      <div class="step-eyebrow">Étape 5 / 6</div>
+      <h1 class="step-title">Plan<br><em>d'action</em></h1>
+      <p class="step-desc">Actions à cocher dans le livrable. Titre, description, horizon et impact estimé.</p>
+
+      <div style="display:grid; grid-template-columns:2fr 1.4fr 1fr 100px 36px; gap:10px; padding:0 16px; margin-bottom:8px;">
+        <span style="font-size:9px; letter-spacing:2px; text-transform:uppercase; color:var(--muted);">Titre de l'action</span>
+        <span style="font-size:9px; letter-spacing:2px; text-transform:uppercase; color:var(--muted);">Description courte</span>
+        <span style="font-size:9px; letter-spacing:2px; text-transform:uppercase; color:var(--muted);">Horizon</span>
+        <span style="font-size:9px; letter-spacing:2px; text-transform:uppercase; color:var(--muted);">Impact</span>
+        <span></span>
+      </div>
+
+      <div id="actions-list"></div>
+      <button class="btn-add" onclick="addAction()">+ Ajouter une action</button>
+
+      <div class="btn-row">
+        <button class="btn-secondary" onclick="goStep(4)">← Retour</button>
+        <button class="btn-primary" onclick="goStep(6)">Suivant →</button>
+      </div>
+    </section>
+
+    <!-- ─── STEP 6 : GÉNÉRER ─── -->
+    <section class="step" id="step-6">
+      <div class="step-eyebrow">Étape 6 / 6</div>
+      <h1 class="step-title">Générer<br><em>le livrable</em></h1>
+      <p class="step-desc">Tout est prêt. Cliquez pour télécharger le fichier HTML personnalisé à partager à votre client.</p>
+
+      <div class="generate-box">
+        <div class="generate-icon">⬡</div>
+        <div class="generate-title">Livrable prêt à générer</div>
+        <div class="generate-desc">Un fichier HTML autonome sera téléchargé.<br>Déposez-le sur Netlify Drop pour obtenir un lien partageable en 60 secondes.</div>
+
+        <div class="checklist" id="checklist"></div>
+
+        <button class="btn-generate" onclick="generateLivrable()">
+          ↓ Télécharger le livrable
+        </button>
+      </div>
+
+      <div style="background:var(--s1); border:1px solid var(--border); padding:24px 28px;">
+        <div style="font-size:9px; letter-spacing:3px; text-transform:uppercase; color:var(--muted); margin-bottom:12px;">Étapes de partage</div>
+        <div style="display:grid; gap:10px;">
+          <div style="display:flex; gap:14px; align-items:flex-start; font-size:13px; color:var(--muted);">
+            <span style="color:var(--gold); font-family:'Cormorant Garamond',serif; font-size:18px; flex-shrink:0;">01</span>
+            <span>Téléchargez le fichier HTML ci-dessus</span>
+          </div>
+          <div style="display:flex; gap:14px; align-items:flex-start; font-size:13px; color:var(--muted);">
+            <span style="color:var(--gold); font-family:'Cormorant Garamond',serif; font-size:18px; flex-shrink:0;">02</span>
+            <span>Allez sur <strong style="color:var(--text);">app.netlify.com</strong> → Sites → Add new site → Deploy manually</span>
+          </div>
+          <div style="display:flex; gap:14px; align-items:flex-start; font-size:13px; color:var(--muted);">
+            <span style="color:var(--gold); font-family:'Cormorant Garamond',serif; font-size:18px; flex-shrink:0;">03</span>
+            <span>Glissez-déposez le fichier → vous obtenez un lien en 10 secondes</span>
+          </div>
+          <div style="display:flex; gap:14px; align-items:flex-start; font-size:13px; color:var(--muted);">
+            <span style="color:var(--gold); font-family:'Cormorant Garamond',serif; font-size:18px; flex-shrink:0;">04</span>
+            <span>Dans Site Settings → Site protection → Set password → définissez le mot de passe client</span>
+          </div>
+          <div style="display:flex; gap:14px; align-items:flex-start; font-size:13px; color:var(--muted);">
+            <span style="color:var(--gold); font-family:'Cormorant Garamond',serif; font-size:18px; flex-shrink:0;">05</span>
+            <span>Envoyez le lien + le mot de passe à votre client par email</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-secondary" onclick="goStep(5)">← Retour</button>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════════════
+let currentStep = 1;
+const totalSteps = 6;
+
+function goStep(n) {
+  document.getElementById('step-' + currentStep).classList.remove('active');
+  document.getElementById('nav-'  + currentStep).classList.remove('active');
+  if (currentStep < n) document.getElementById('nav-' + currentStep).classList.add('done');
+  currentStep = n;
+  document.getElementById('step-' + n).classList.add('active');
+  document.getElementById('nav-'  + n).classList.add('active');
+  document.getElementById('nav-'  + n).classList.remove('done');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (n === 6) buildChecklist();
+}
+
+// ═══════════════════════════════════════════════════════
+// COMMUNES
+// ═══════════════════════════════════════════════════════
+const defaultCommunes = [
+  { nom: "Poisy", pop: 9700, dist: "< 1 min" },
+  { nom: "Épagny Metz-Tessy", pop: 15100, dist: "3-5 min" },
+  { nom: "Meythet", pop: 11200, dist: "7-10 min" },
+  { nom: "Annecy nord-ouest", pop: 14000, dist: "10-15 min" },
+  { nom: "Sillingy", pop: 5500, dist: "6-8 min" },
+  { nom: "Chavanod", pop: 4200, dist: "6-8 min" },
+  { nom: "La Balme-de-Sillingy", pop: 3800, dist: "8-10 min" },
+  { nom: "Lovagny", pop: 1900, dist: "5-7 min" },
+  { nom: "Nonglard", pop: 1600, dist: "5-7 min" },
+];
+
+function renderCommunes() {
+  const list = document.getElementById('communes-list');
+  list.innerHTML = '';
+  defaultCommunes.forEach((c, i) => {
+    const row = document.createElement('div');
+    row.className = 'commune-row';
+    row.innerHTML = `
+      <input type="text"   value="${c.nom}"  placeholder="Commune"   oninput="defaultCommunes[${i}].nom=this.value; calcPop()">
+      <input type="number" value="${c.pop}"  placeholder="Population" oninput="defaultCommunes[${i}].pop=parseInt(this.value)||0; calcPop()">
+      <input type="text"   value="${c.dist}" placeholder="Distance"   oninput="defaultCommunes[${i}].dist=this.value">
+      <button class="btn-remove" onclick="removeCommune(${i})">×</button>
+    `;
+    list.appendChild(row);
+  });
+  calcPop();
+}
+
+function addCommune() {
+  defaultCommunes.push({ nom: '', pop: 0, dist: '' });
+  renderCommunes();
+}
+
+function removeCommune(i) {
+  defaultCommunes.splice(i, 1);
+  renderCommunes();
+}
+
+function calcPop() {
+  const total = defaultCommunes.reduce((s, c) => s + (c.pop || 0), 0);
+  const dep = parseFloat(document.getElementById('f_dep_hab')?.value) || 111;
+  document.getElementById('pop-total').textContent = total.toLocaleString('fr-FR') + ' hab.';
+  document.getElementById('pot-brut').textContent  = (total * dep).toLocaleString('fr-FR') + ' €';
+}
+
+// ═══════════════════════════════════════════════════════
+// CONCURRENTS
+// ═══════════════════════════════════════════════════════
+const defaultConcurrents = [
+  { nom: "GrandOptical Épagny",        type: "Succursale", ville: "Épagny", note: "4.7" },
+  { nom: "Générale d'Optique Épagny",  type: "Succursale", ville: "Épagny", note: "4.8" },
+  { nom: "Optic 2000 Épagny",          type: "Coopérative", ville: "Épagny", note: "4.8" },
+  { nom: "Optical Center Épagny ×2",   type: "Franchise",  ville: "Épagny", note: "4.6 / 3.4" },
+  { nom: "Alain Afflelou Épagny",      type: "Franchise",  ville: "Épagny", note: "5.0" },
+  { nom: "Auchan Optique Épagny",      type: "GSA",        ville: "Épagny", note: "4.3" },
+  { nom: "Krys Épagny",                type: "Coopérative", ville: "Épagny", note: "4.8" },
+  { nom: "Le Chalet des Lunettes",     type: "Indépendant", ville: "Sillingy", note: "4.9" },
+  { nom: "Balme Optique",              type: "Indépendant", ville: "La Balme", note: "5.0" },
+  { nom: "Écouter Voir",               type: "Mutualiste",  ville: "Meythet", note: "4.8" },
+];
+
+function renderConcurrents() {
+  const list = document.getElementById('concurrent-list');
+  list.innerHTML = '';
+  defaultConcurrents.forEach((c, i) => {
+    const row = document.createElement('div');
+    row.className = 'concurrent-row';
+    row.innerHTML = `
+      <input type="text" value="${c.nom}"   placeholder="Nom magasin" oninput="defaultConcurrents[${i}].nom=this.value">
+      <select oninput="defaultConcurrents[${i}].type=this.value">
+        ${['Succursale','Franchise','Coopérative','Indépendant','GSA','Mutualiste'].map(t => `<option ${c.type===t?'selected':''}>${t}</option>`).join('')}
+      </select>
+      <input type="text" value="${c.ville}" placeholder="Ville" oninput="defaultConcurrents[${i}].ville=this.value">
+      <input type="text" value="${c.note}"  placeholder="Note" oninput="defaultConcurrents[${i}].note=this.value" style="text-align:center">
+      <button class="btn-remove" onclick="removeConcurrent(${i}); renderConcurrents(); calcParts()">×</button>
+    `;
+    list.appendChild(row);
+  });
+  calcParts();
+}
+
+function addConcurrent() {
+  defaultConcurrents.push({ nom: '', type: 'Indépendant', ville: '', note: '' });
+  renderConcurrents();
+}
+
+function removeConcurrent(i) { defaultConcurrents.splice(i, 1); }
+
+function calcParts() {
+  const n = defaultConcurrents.length + 1; // +1 pour le client
+  const eq = n > 0 ? (100 / n) : 0;
+  const cible = eq * 0.85;
+  document.getElementById('nb-acteurs').textContent    = n;
+  document.getElementById('part-equitable').textContent = eq.toFixed(1) + ' %';
+  document.getElementById('part-cible').textContent     = cible.toFixed(1) + ' %';
+}
+
+// ═══════════════════════════════════════════════════════
+// ACTIONS
+// ═══════════════════════════════════════════════════════
+const defaultActions = [
+  { titre: "Activer Google My Business — posts hebdomadaires", desc: "Publier 1 post/semaine. Objectif : 150+ avis sous 6 mois.", horizon: "Quick win", impact: "+20 K€" },
+  { titre: "Demande d'avis client systématique", desc: "QR code ou SMS à chaque livraison de lunettes.", horizon: "Quick win", impact: "+15 K€" },
+  { titre: "Fichier client + rappels de renouvellement", desc: "Cycle moyen 2 ans. 300 clients = 150 renouvellements/an à relancer.", horizon: "Quick win", impact: "+40 K€" },
+  { titre: "Formaliser le process de vente", desc: "Script anamnèse + argumentation 2ème paire = +50-80 € de panier.", horizon: "3 mois", impact: "+35 K€" },
+  { titre: "Développer l'axe solaires", desc: "Zone montagne/lac = levier solaires significatif.", horizon: "3 mois", impact: "+25 K€" },
+  { titre: "Ligne éditoriale réseaux sociaux", desc: "1 post/semaine avec identité visuelle définie.", horizon: "3 mois", impact: "+18 K€" },
+  { titre: "Optimiser la rotation des stocks", desc: "Cibler les 20% références qui font 80% des ventes.", horizon: "6 mois", impact: "Tréso" },
+  { titre: "Structurer les moments WOW", desc: "3 rituels mémorables dans le parcours client.", horizon: "6-12 mois", impact: "Fidél." },
+  { titre: "Envisager le premier recrutement", desc: "Au-delà de 250K€, un temps partiel devient rentable.", horizon: "12 mois", impact: "+150 K€" },
+];
+
+function renderActions() {
+  const list = document.getElementById('actions-list');
+  list.innerHTML = '';
+  defaultActions.forEach((a, i) => {
+    const row = document.createElement('div');
+    row.className = 'action-row';
+    row.innerHTML = `
+      <input type="text" value="${a.titre}" placeholder="Titre de l'action" oninput="defaultActions[${i}].titre=this.value">
+      <input type="text" value="${a.desc}"  placeholder="Description" oninput="defaultActions[${i}].desc=this.value">
+      <select oninput="defaultActions[${i}].horizon=this.value">
+        ${['Quick win','1 mois','3 mois','6 mois','6-12 mois','12 mois'].map(h => `<option ${a.horizon===h?'selected':''}>${h}</option>`).join('')}
+      </select>
+      <input type="text" value="${a.impact}" placeholder="+X K€" style="text-align:center" oninput="defaultActions[${i}].impact=this.value">
+      <button class="btn-remove" onclick="defaultActions.splice(${i},1); renderActions()">×</button>
+    `;
+    list.appendChild(row);
+  });
+}
+
+function addAction() {
+  defaultActions.push({ titre: '', desc: '', horizon: 'Quick win', impact: '' });
+  renderActions();
+}
+
+// ═══════════════════════════════════════════════════════
+// CHECKLIST (step 6)
+// ═══════════════════════════════════════════════════════
+function buildChecklist() {
+  const checks = [
+    { label: 'Infos client renseignées', ok: !!document.getElementById('f_magasin').value },
+    { label: 'Chiffres clés saisis', ok: !!document.getElementById('f_ca').value },
+    { label: `${defaultCommunes.length} communes dans la zone`, ok: defaultCommunes.length > 0 },
+    { label: `${defaultConcurrents.length} concurrents identifiés`, ok: defaultConcurrents.length > 0 },
+    { label: `${defaultActions.length} actions dans le plan`, ok: defaultActions.length > 0 },
+  ];
+  document.getElementById('checklist').innerHTML = checks.map(c => `
+    <div class="check-item">
+      <span class="ck ${c.ok ? '' : 'pending'}">${c.ok ? '✓' : '○'}</span>
+      <span>${c.label}</span>
+    </div>
+  `).join('');
+}
+
+// ═══════════════════════════════════════════════════════
+// GÉNÉRATION DU LIVRABLE HTML
+// ═══════════════════════════════════════════════════════
+function generateLivrable() {
+  const g = {
+    magasin:   document.getElementById('f_magasin').value   || 'Mon Opticien',
+    dirigeant: document.getElementById('f_dirigeant').value || '',
+    ville:     document.getElementById('f_ville').value     || '',
+    cp:        document.getElementById('f_cp').value        || '',
+    statut:    document.getElementById('f_statut').value    || 'Indépendant',
+    email:     document.getElementById('f_email').value     || '',
+    noteGoogle:parseFloat(document.getElementById('f_note_google').value) || 4.5,
+    ca:        parseInt(document.getElementById('f_ca').value)    || 0,
+    panier:    parseInt(document.getElementById('f_panier').value)|| 0,
+    marge:     parseInt(document.getElementById('f_marge').value) || 0,
+    transfo:   parseFloat(document.getElementById('f_transfo').value) || 0,
+    deuxieme:  parseInt(document.getElementById('f_deuxieme').value) || 0,
+    evolution: document.getElementById('f_evolution').value || 'Stagnant',
+    moyCA:     parseInt(document.getElementById('f_moy_ca').value)    || 350000,
+    moyPanier: parseInt(document.getElementById('f_moy_panier').value)|| 403,
+    depHab:    parseFloat(document.getElementById('f_dep_hab').value) || 111,
+    communes: [...defaultCommunes],
+    concurrents: [...defaultConcurrents],
+    actions: [...defaultActions],
+  };
+
+  const popZone   = g.communes.reduce((s,c) => s+(c.pop||0), 0);
+  const potBrut   = popZone * g.depHab;
+  const nbActeurs = g.concurrents.length + 1;
+  const partEq    = nbActeurs > 0 ? (100 / nbActeurs) : 0;
+  const partCible = partEq * 0.85;
+  const partOpti  = Math.min(partEq * 1.4, 25);
+  const partPlanch= partEq * 0.65;
+  const caCible   = Math.round(potBrut * partCible / 100);
+  const caOpti    = Math.round(potBrut * partOpti  / 100);
+  const caPlanch  = Math.round(potBrut * partPlanch / 100);
+
+  const tagClass = h => h === 'Quick win' ? 'tag-quick' : h.includes('12') ? 'tag-long' : 'tag-moyen';
+
+  const communesHTML = g.communes.map((c,i) => `
+    <div class="commune-pill ${i===0?'anchor':''}">
+      <span class="commune-name">${i===0?'📍 ':''} ${esc(c.nom)}</span>
+      <span class="commune-pop">${(c.pop||0).toLocaleString('fr-FR')}</span>
+    </div>`).join('');
+
+  const concurrentsHTML = g.concurrents.map((c,i) => `
+    <div class="concurrent-item">
+      <span class="concurrent-name">${esc(c.nom)}</span>
+      <span class="concurrent-type">${esc(c.type)}</span>
+      <span class="concurrent-loc">${esc(c.ville)}</span>
+      <span class="concurrent-note">${esc(c.note)}</span>
+    </div>`).join('');
+
+  const actionsHTML = g.actions.map((a,i) => `
+    <div class="action-item" data-id="${i+1}" onclick="toggleAction(this)">
+      <div class="action-checkbox-col">
+        <div class="action-checkbox">
+          <svg viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1" stroke="#0d0f12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
+      <div class="action-content">
+        <div class="action-header">
+          <span class="action-title">${esc(a.titre)}</span>
+          <span class="action-tag ${tagClass(a.horizon)}">${esc(a.horizon)}</span>
+        </div>
+        <p class="action-desc">${esc(a.desc)}</p>
+      </div>
+      <div class="action-meta">
+        <span class="action-impact">${esc(a.impact)}</span>
+        <span class="action-impact-label">potentiel</span>
+      </div>
+    </div>`).join('');
+
+  const compareRows = [
+    ["CA annuel", fmt(g.ca)+"€", fmt(g.moyCA)+"€", g.ca < g.moyCA ? "bad" : "good", g.ca < g.moyCA ? "Sous-captation" : "Au-dessus moy.", g.ca < g.moyCA ? "red" : "green"],
+    ["Panier moyen", g.panier+"€", g.moyPanier+"€", g.panier >= g.moyPanier ? "good" : "ok", g.panier >= g.moyPanier ? "Avantage" : "Dans la norme", g.panier >= g.moyPanier ? "green" : "gold"],
+    ["Marge brute", g.marge+"%", "58–65 %", "ok", "Normale", "gold"],
+    ["Taux transformation", g.transfo+"/10", "6–7/10", g.transfo >= 8 ? "good" : "ok", g.transfo >= 8 ? "Excellent" : "Normal", g.transfo >= 8 ? "green" : "gold"],
+    ["Taux 2ème paire", g.deuxieme+"%", "30–40 %", g.deuxieme >= 50 ? "good" : "ok", g.deuxieme >= 50 ? "Exceptionnel" : "Normal", g.deuxieme >= 50 ? "green" : "gold"],
+    ["Note Google", g.noteGoogle+"/5", "4,3–4,5", g.noteGoogle >= 4.5 ? "good" : "ok", g.noteGoogle >= 4.5 ? "Avantage" : "Normal", g.noteGoogle >= 4.5 ? "green" : "gold"],
+  ].map(([ind,val,ref,cls,label,bc],i) => `
+    <tr>
+      <td>${ind}</td>
+      <td class="val-${cls}">${val}</td>
+      <td>${ref}</td>
+      <td><span class="badge badge-${bc}">${label}</span></td>
+    </tr>`).join('');
+
+  const today = new Date().toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
+
+  const html = `<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${esc(g.magasin)} — Analyse Dynamis</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0d0f12;--surface:#13161b;--surface2:#1a1e26;--border:rgba(255,255,255,0.07);--gold:#c9a96e;--gold-dim:#7a5e35;--text:#e8e4dc;--muted:#6b6b72;--green:#4ade80;--red:#f87171;--blue:#60a5fa}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;line-height:1.7;min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:0.5}
+header{position:relative;padding:80px 60px 60px;border-bottom:1px solid var(--border);overflow:hidden}
+header::before{content:'';position:absolute;top:-120px;right:-120px;width:500px;height:500px;background:radial-gradient(circle,rgba(201,169,110,0.08) 0%,transparent 70%);pointer-events:none}
+.header-eyebrow{font-size:10px;font-weight:500;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:20px}
+header h1{font-family:'Cormorant Garamond',serif;font-size:clamp(36px,5vw,60px);font-weight:300;line-height:1.1;margin-bottom:10px}
+header h1 em{font-style:italic;color:var(--gold)}
+.header-sub{font-size:13px;color:var(--muted);letter-spacing:1px;margin-top:16px}
+.header-meta{display:flex;gap:32px;margin-top:28px;flex-wrap:wrap}
+.meta-item{display:flex;flex-direction:column;gap:4px}
+.meta-label{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted)}
+.meta-value{font-size:14px;color:var(--text)}
+.progress-bar-wrapper{background:rgba(13,15,18,0.92);border-bottom:1px solid var(--border);padding:20px 60px;display:flex;align-items:center;gap:24px;position:sticky;top:0;z-index:100;backdrop-filter:blur(12px)}
+.progress-label{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+.progress-track{flex:1;height:2px;background:rgba(255,255,255,0.07);border-radius:2px;position:relative}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--gold-dim),var(--gold));border-radius:2px;transition:width 0.6s cubic-bezier(0.4,0,0.2,1);position:relative}
+.progress-fill::after{content:'';position:absolute;right:-1px;top:-3px;width:8px;height:8px;background:var(--gold);border-radius:50%;box-shadow:0 0 12px var(--gold)}
+.progress-pct{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;color:var(--gold);min-width:48px;text-align:right}
+main{max-width:1100px;margin:0 auto;padding:60px 60px 120px}
+.section-title{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;color:var(--text);letter-spacing:0.5px;margin-bottom:8px;margin-top:64px;display:flex;align-items:center;gap:16px}
+.section-title::before{content:'';display:block;width:32px;height:1px;background:var(--gold);flex-shrink:0}
+.section-desc{font-size:13px;color:var(--muted);margin-bottom:28px;margin-left:48px}
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);border-radius:2px;overflow:hidden;margin-top:32px}
+.kpi-card{background:var(--surface);padding:28px 24px;position:relative;overflow:hidden;transition:background 0.3s}
+.kpi-card:hover{background:var(--surface2)}
+.kpi-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:0;transition:opacity 0.3s}
+.kpi-card:hover::after{opacity:1}
+.kpi-label{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.kpi-value{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:300;line-height:1;margin-bottom:8px}
+.kpi-value.gold{color:var(--gold)}.kpi-value.green{color:var(--green)}
+.kpi-sub{font-size:11px;color:var(--muted);line-height:1.4}
+.compare-table{width:100%;border-collapse:collapse;margin-top:28px}
+.compare-table thead tr{border-bottom:1px solid var(--border)}
+.compare-table th{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);padding:12px 16px;text-align:left;font-weight:400}
+.compare-table td{padding:14px 16px;font-size:13px;border-bottom:1px solid var(--border);color:var(--text);transition:background 0.2s}
+.compare-table tr:hover td{background:var(--surface2)}
+.val-bad{color:var(--red);font-weight:500}.val-good{color:var(--green);font-weight:500}.val-ok{color:var(--text)}
+.badge{display:inline-block;padding:2px 8px;border-radius:2px;font-size:10px;letter-spacing:1px;text-transform:uppercase}
+.badge-red{background:rgba(248,113,113,0.12);color:var(--red)}.badge-green{background:rgba(74,222,128,0.12);color:var(--green)}.badge-gold{background:rgba(201,169,110,0.12);color:var(--gold)}
+.zone-visual{background:var(--surface);border:1px solid var(--border);padding:36px;margin-top:28px;position:relative;overflow:hidden}
+.zone-communes{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
+.commune-pill{background:var(--surface2);border:1px solid var(--border);padding:12px 16px;display:flex;justify-content:space-between;align-items:center;transition:border-color 0.2s}
+.commune-pill:hover{border-color:var(--gold-dim)}.commune-pill.anchor{border-color:var(--gold-dim);background:rgba(201,169,110,0.05)}
+.commune-name{font-size:13px;color:var(--text)}.commune-pop{font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--gold)}
+.concurrent-list{margin-top:24px;display:grid;gap:1px;background:var(--border);border:1px solid var(--border)}
+.concurrent-item{background:var(--surface);padding:14px 20px;display:flex;align-items:center;gap:16px;font-size:13px;transition:background 0.2s}
+.concurrent-item:hover{background:var(--surface2)}
+.concurrent-name{flex:1.2;font-weight:400}.concurrent-type{flex:1.5;color:var(--muted);font-size:12px}.concurrent-loc{flex:0.8;color:var(--muted);font-size:12px}.concurrent-note{flex:0.4;text-align:right;color:var(--gold);font-size:13px;font-family:'Cormorant Garamond',serif}
+.scenarios{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border);margin-top:28px}
+.scenario{background:var(--surface);padding:32px 28px;position:relative;overflow:hidden}
+.scenario.highlight{background:rgba(201,169,110,0.06)}
+.scenario.highlight::before{content:'CIBLE RECOMMANDÉE';position:absolute;top:12px;right:12px;font-size:8px;letter-spacing:2px;color:var(--gold);border:1px solid var(--gold-dim);padding:3px 8px}
+.scenario-label{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:16px}
+.scenario-pct{font-family:'Cormorant Garamond',serif;font-size:48px;font-weight:300;line-height:1;margin-bottom:4px}
+.scenario.highlight .scenario-pct{color:var(--gold)}
+.scenario-ca{font-size:20px;font-family:'Cormorant Garamond',serif;font-weight:300;color:var(--muted);margin-bottom:16px}
+.scenario.highlight .scenario-ca{color:var(--text)}
+.scenario-gain{font-size:12px;color:var(--green);padding:6px 12px;background:rgba(74,222,128,0.08);display:inline-block}
+.actions-grid{display:grid;gap:1px;background:var(--border);border:1px solid var(--border);margin-top:24px}
+.action-item{background:var(--surface);padding:0;display:flex;align-items:stretch;transition:background 0.2s;cursor:pointer;position:relative;overflow:hidden}
+.action-item::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:transparent;transition:background 0.3s}
+.action-item.done::before{background:var(--gold)}
+.action-item:hover{background:var(--surface2)}
+.action-checkbox-col{display:flex;align-items:center;justify-content:center;padding:20px 20px 20px 24px;flex-shrink:0}
+.action-checkbox{width:18px;height:18px;border:1px solid rgba(255,255,255,0.2);border-radius:2px;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.25s}
+.action-item.done .action-checkbox{background:var(--gold);border-color:var(--gold)}
+.action-checkbox svg{opacity:0;transition:opacity 0.25s;width:11px;height:11px}
+.action-item.done .action-checkbox svg{opacity:1}
+.action-content{padding:18px 20px 18px 0;flex:1}
+.action-header{display:flex;align-items:center;gap:12px;margin-bottom:4px}
+.action-title{font-size:14px;font-weight:400;color:var(--text);transition:color 0.25s}
+.action-item.done .action-title{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--gold-dim)}
+.action-tag{font-size:8px;letter-spacing:2px;text-transform:uppercase;padding:2px 8px;border-radius:2px}
+.tag-quick{background:rgba(96,165,250,0.1);color:var(--blue)}.tag-moyen{background:rgba(201,169,110,0.1);color:var(--gold)}.tag-long{background:rgba(248,113,113,0.1);color:var(--red)}
+.action-desc{font-size:12px;color:var(--muted);line-height:1.5;max-width:600px}
+.action-item.done .action-desc{color:rgba(107,107,114,0.5)}
+.action-meta{padding:18px 24px 18px 0;display:flex;flex-direction:column;justify-content:center;align-items:flex-end;gap:6px;flex-shrink:0;min-width:90px}
+.action-impact{font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--green)}
+.action-impact-label{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+.gold-divider{height:1px;background:linear-gradient(90deg,transparent,var(--gold-dim),transparent);margin:60px 0 0;opacity:0.4}
+footer{border-top:1px solid var(--border);padding:28px 60px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
+.footer-brand{font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--gold)}
+.footer-note{font-size:11px;color:var(--muted)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{animation:fadeUp 0.6s ease both}
+@media(max-width:768px){header,main,footer{padding-left:24px;padding-right:24px}.progress-bar-wrapper{padding-left:24px;padding-right:24px}.scenarios{grid-template-columns:1fr}.kpi-grid{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-eyebrow">Dynamis Académie — Analyse R1</div>
+  <h1>${esc(g.magasin)}<br><em>Potentiel de zone</em></h1>
+  <p class="header-sub">Isochrone 15 min — ${esc(g.ville)} ${esc(g.cp)}</p>
+  <div class="header-meta">
+    <div class="meta-item"><span class="meta-label">Dirigeant</span><span class="meta-value">${esc(g.dirigeant)}</span></div>
+    <div class="meta-item"><span class="meta-label">Statut</span><span class="meta-value">${esc(g.statut)}</span></div>
+    <div class="meta-item"><span class="meta-label">Préparé par</span><span class="meta-value">Bastien — Dynamis Académie</span></div>
+    <div class="meta-item"><span class="meta-label">Date</span><span class="meta-value">${today}</span></div>
+  </div>
+</header>
+<div class="progress-bar-wrapper">
+  <span class="progress-label">Plan d'action</span>
+  <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+  <span class="progress-pct" id="progressPct">0 %</span>
+</div>
+<main>
+  <h2 class="section-title">Chiffres clés</h2>
+  <p class="section-desc">Situation actuelle vs potentiel identifié</p>
+  <div class="kpi-grid">
+    <div class="kpi-card fade-in"><div class="kpi-label">CA actuel</div><div class="kpi-value gold">${fmt(g.ca)} €</div><div class="kpi-sub">Dernier exercice — ${esc(g.evolution)}</div></div>
+    <div class="kpi-card fade-in"><div class="kpi-label">Panier moyen</div><div class="kpi-value">${g.panier} €</div><div class="kpi-sub">Moy. nationale ~${g.moyPanier} €</div></div>
+    <div class="kpi-card fade-in"><div class="kpi-label">Marge brute</div><div class="kpi-value">${g.marge} %</div><div class="kpi-sub">Secteur : 58–65 %</div></div>
+    <div class="kpi-card fade-in"><div class="kpi-label">Note Google</div><div class="kpi-value gold">${g.noteGoogle} / 5</div><div class="kpi-sub">Réputation locale</div></div>
+    <div class="kpi-card fade-in"><div class="kpi-label">Taux transfo</div><div class="kpi-value green">${g.transfo} / 10</div><div class="kpi-sub">Moy. secteur : 6–7/10</div></div>
+    <div class="kpi-card fade-in"><div class="kpi-label">Taux 2ème paire</div><div class="kpi-value">${g.deuxieme} %</div><div class="kpi-sub">Moy. nationale : 30–40 %</div></div>
+  </div>
+
+  <div class="gold-divider"></div>
+  <h2 class="section-title">Zone isochrone 15 min</h2>
+  <p class="section-desc">Communes couvertes — population estimée</p>
+  <div class="zone-visual">
+    <div class="zone-communes">${communesHTML}</div>
+    <div style="margin-top:28px;padding-top:24px;border-top:1px solid var(--border);display:flex;gap:40px;flex-wrap:wrap">
+      <div><div class="kpi-label">Population zone</div><div style="font-family:'Cormorant Garamond',serif;font-size:34px;color:var(--text)">${popZone.toLocaleString('fr-FR')} <span style="font-size:16px;color:var(--muted)">hab.</span></div></div>
+      <div><div class="kpi-label">Dépense / hab. / an</div><div style="font-family:'Cormorant Garamond',serif;font-size:34px;color:var(--text)">${g.depHab} € <span style="font-size:14px;color:var(--muted)">Octika 2025</span></div></div>
+      <div><div class="kpi-label">Potentiel brut zone</div><div style="font-family:'Cormorant Garamond',serif;font-size:34px;color:var(--gold)">${(potBrut/1000000).toFixed(2)} M€</div></div>
+    </div>
+  </div>
+
+  <div class="gold-divider"></div>
+  <h2 class="section-title">Indicateurs vs marché national</h2>
+  <p class="section-desc">Sources : Octika/GfK 2025 · PropulsebyCA 2025 · INSEE 2024</p>
+  <table class="compare-table">
+    <thead><tr><th>Indicateur</th><th>${esc(g.dirigeant.split(' ')[0])}</th><th>Moyenne nationale</th><th>Lecture</th></tr></thead>
+    <tbody>${compareRows}</tbody>
+  </table>
+
+  <div class="gold-divider"></div>
+  <h2 class="section-title">Concurrents identifiés</h2>
+  <p class="section-desc">${g.concurrents.length} opticiens recensés dans la zone isochrone</p>
+  <div class="concurrent-list">
+    <div class="concurrent-item" style="background:var(--surface2)">
+      <span class="concurrent-name" style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted)">Nom</span>
+      <span class="concurrent-type" style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted)">Type</span>
+      <span class="concurrent-loc"  style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted)">Lieu</span>
+      <span class="concurrent-note" style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted)">Note</span>
+    </div>
+    ${concurrentsHTML}
+    <div class="concurrent-item" style="background:rgba(201,169,110,0.05);border-top:1px solid var(--gold-dim)">
+      <span class="concurrent-name" style="color:var(--gold);font-weight:500">📍 ${esc(g.magasin)}</span>
+      <span class="concurrent-type" style="color:var(--gold)">${esc(g.statut)} — Votre magasin</span>
+      <span class="concurrent-loc"  style="color:var(--gold)">${esc(g.ville)}</span>
+      <span class="concurrent-note" style="color:var(--gold)">${g.noteGoogle}</span>
+    </div>
+  </div>
+
+  <div class="gold-divider"></div>
+  <h2 class="section-title">Scénarios de parts de marché</h2>
+  <p class="section-desc">Potentiel réaliste — base : ${(potBrut/1000000).toFixed(2)} M€ pour ${nbActeurs} acteurs</p>
+  <div class="scenarios">
+    <div class="scenario">
+      <div class="scenario-label">Plancher</div>
+      <div class="scenario-pct">${partPlanch.toFixed(1)} %</div>
+      <div class="scenario-ca">~${fmt(caPlanch)} €</div>
+      <div class="scenario-gain">+ ${fmt(caPlanch - g.ca)} € vs aujourd'hui</div>
+      <p style="font-size:12px;color:var(--muted);margin-top:16px">Statu quo — peu ou pas d'actions nouvelles</p>
+    </div>
+    <div class="scenario highlight">
+      <div class="scenario-label">Cible recommandée</div>
+      <div class="scenario-pct">${partCible.toFixed(1)} %</div>
+      <div class="scenario-ca">~${fmt(caCible)} €</div>
+      <div class="scenario-gain">+ ${fmt(caCible - g.ca)} € vs aujourd'hui</div>
+      <p style="font-size:12px;color:var(--muted);margin-top:16px">Axes Dynamis Académie activés — 12–24 mois</p>
+    </div>
+    <div class="scenario">
+      <div class="scenario-label">Optimiste</div>
+      <div class="scenario-pct">${partOpti.toFixed(1)} %</div>
+      <div class="scenario-ca">~${fmt(caOpti)} €</div>
+      <div class="scenario-gain">+ ${fmt(caOpti - g.ca)} € vs aujourd'hui</div>
+      <p style="font-size:12px;color:var(--muted);margin-top:16px">Excellence opérationnelle + communication soutenue</p>
+    </div>
+  </div>
+  <div style="background:var(--surface);border:1px solid var(--border);border-top:none;padding:20px 28px;display:flex;gap:12px;align-items:flex-start">
+    <div style="color:var(--gold);font-size:18px;flex-shrink:0">◆</div>
+    <p style="font-size:13px;color:var(--muted);line-height:1.6"><strong style="color:var(--text)">Point clé :</strong> ${esc(g.magasin)} est positionné sur une zone de <strong style="color:var(--gold)">${popZone.toLocaleString('fr-FR')} habitants</strong>. Le premier levier de croissance n'est pas le prix — c'est la <strong style="color:var(--gold)">visibilité locale</strong>.</p>
+  </div>
+
+  <div class="gold-divider"></div>
+  <h2 class="section-title">Plan d'action</h2>
+  <p class="section-desc">Cliquez sur chaque action pour la marquer comme réalisée</p>
+  <div class="actions-grid" id="actionsGrid">${actionsHTML}</div>
+</main>
+<footer>
+  <div><div class="footer-brand">Dynamis Académie</div><div class="footer-note" style="margin-top:6px">Document personnalisé pour ${esc(g.magasin)} — Confidentiel</div></div>
+  <div style="text-align:right"><div class="footer-note">Sources : Octika/GfK 2025 · Xerfi 2025 · INSEE 2022-2024</div><div class="footer-note" style="margin-top:4px">Données concurrents : Google Maps, ${today}</div></div>
+</footer>
+<script>
+const KEY='dynamis_actions';
+function load(){try{const s=localStorage.getItem(KEY);return s?JSON.parse(s):[]}catch{return[]}}
+function save(ids){try{localStorage.setItem(KEY,JSON.stringify(ids))}catch{}}
+function update(){
+  const total=document.querySelectorAll('.action-item').length;
+  const done=document.querySelectorAll('.action-item.done').length;
+  const pct=total>0?Math.round((done/total)*100):0;
+  document.getElementById('progressFill').style.width=pct+'%';
+  document.getElementById('progressPct').textContent=pct+' %';
+}
+function toggleAction(el){
+  el.classList.toggle('done');
+  const ids=[...document.querySelectorAll('.action-item.done')].map(e=>e.dataset.id);
+  save(ids); update();
+}
+load().forEach(id=>{const el=document.querySelector('.action-item[data-id="'+id+'"]');if(el)el.classList.add('done')});
+update();
+<\/script>
+</body>
+</html>`;
+
+  download(`livrable_${slug(g.magasin)}.html`, html);
+}
+
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+function fmt(n) {
+  return Math.round(n||0).toLocaleString('fr-FR');
+}
+function slug(s) {
+  return (s||'client').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'_').slice(0,30);
+}
+function download(filename, content) {
+  const blob = new Blob([content], { type: 'text/html;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+// ═══════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════
+renderCommunes();
+renderConcurrents();
+renderActions();
+</script>
+</body>
+</html>
