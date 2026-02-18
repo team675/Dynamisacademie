@@ -1,669 +1,874 @@
+
+Livrable dynamis poisy final · HTML
+Copier
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>L'Opticien de Poisy — Analyse Dynamis</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<title>L'Opticien de Poisy — Analyse Dynamis Académie</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  :root {
-    --bg:        #0d0f12;
-    --surface:   #13161b;
-    --surface2:  #1a1e26;
-    --border:    rgba(255,255,255,0.07);
-    --gold:      #c9a96e;
-    --gold-dim:  #7a5e35;
-    --gold-glow: rgba(201,169,110,0.15);
-    --text:      #e8e4dc;
-    --muted:     #6b6b72;
-    --green:     #4ade80;
-    --red:       #f87171;
-    --blue:      #60a5fa;
-  }
-
-  html { scroll-behavior: smooth; }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    font-weight: 300;
-    line-height: 1.7;
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-
-  /* ── GRAIN OVERLAY ── */
-  body::before {
-    content: '';
-    position: fixed; inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 9999;
-    opacity: 0.5;
-  }
-
-  /* ── HEADER ── */
-  header {
-    position: relative;
-    padding: 80px 60px 60px;
-    border-bottom: 1px solid var(--border);
-    overflow: hidden;
-  }
-
-  header::before {
-    content: '';
-    position: absolute;
-    top: -120px; right: -120px;
-    width: 500px; height: 500px;
-    background: radial-gradient(circle, rgba(201,169,110,0.08) 0%, transparent 70%);
-    pointer-events: none;
-  }
-
-  .header-eyebrow {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 10px;
-    font-weight: 500;
-    letter-spacing: 4px;
-    text-transform: uppercase;
-    color: var(--gold);
-    margin-bottom: 20px;
-  }
-
-  header h1 {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(38px, 5vw, 64px);
-    font-weight: 300;
-    line-height: 1.1;
-    color: var(--text);
-    margin-bottom: 10px;
-  }
-
-  header h1 em {
-    font-style: italic;
-    color: var(--gold);
-  }
-
-  .header-sub {
-    font-size: 13px;
-    color: var(--muted);
-    letter-spacing: 1px;
-    margin-top: 16px;
-  }
-
-  .header-meta {
-    display: flex;
-    gap: 32px;
-    margin-top: 32px;
-    flex-wrap: wrap;
-  }
-
-  .meta-item {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-
-  .meta-label {
-    font-size: 9px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--muted);
-  }
-
-  .meta-value {
-    font-size: 14px;
-    font-weight: 400;
-    color: var(--text);
-  }
-
-  /* ── PROGRESS BAR ── */
-  .progress-bar-wrapper {
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    padding: 20px 60px;
-    display: flex;
-    align-items: center;
-    gap: 24px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    backdrop-filter: blur(12px);
-    background: rgba(13,15,18,0.92);
-  }
-
-  .progress-label {
-    font-size: 11px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--muted);
-    white-space: nowrap;
-  }
-
-  .progress-track {
-    flex: 1;
-    height: 2px;
-    background: rgba(255,255,255,0.07);
-    border-radius: 2px;
-    overflow: visible;
-    position: relative;
-  }
-
-  .progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--gold-dim), var(--gold));
-    border-radius: 2px;
-    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-  }
-
-  .progress-fill::after {
-    content: '';
-    position: absolute;
-    right: -1px; top: -3px;
-    width: 8px; height: 8px;
-    background: var(--gold);
-    border-radius: 50%;
-    box-shadow: 0 0 12px var(--gold);
-  }
-
-  .progress-pct {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 22px;
-    font-weight: 300;
-    color: var(--gold);
-    white-space: nowrap;
-    min-width: 48px;
-    text-align: right;
-  }
-
-  /* ── MAIN LAYOUT ── */
-  main {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 60px 60px 120px;
-  }
-
-  /* ── SECTION TITLE ── */
-  .section-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 28px;
-    font-weight: 300;
-    color: var(--text);
-    letter-spacing: 0.5px;
-    margin-bottom: 8px;
-    margin-top: 64px;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-  }
-
-  .section-title::before {
-    content: '';
-    display: block;
-    width: 32px; height: 1px;
-    background: var(--gold);
-    flex-shrink: 0;
-  }
-
-  .section-desc {
-    font-size: 13px;
-    color: var(--muted);
-    margin-bottom: 28px;
-    margin-left: 48px;
-  }
-
-  /* ── KPI GRID ── */
-  .kpi-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1px;
-    background: var(--border);
-    border: 1px solid var(--border);
-    border-radius: 2px;
-    overflow: hidden;
-    margin-top: 32px;
-  }
-
-  .kpi-card {
-    background: var(--surface);
-    padding: 32px 28px;
-    position: relative;
-    overflow: hidden;
-    transition: background 0.3s;
-  }
-
-  .kpi-card:hover { background: var(--surface2); }
-
-  .kpi-card::after {
-    content: '';
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, var(--gold), transparent);
-    opacity: 0;
-    transition: opacity 0.3s;
-  }
-
-  .kpi-card:hover::after { opacity: 1; }
-
-  .kpi-label {
-    font-size: 9px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 12px;
-  }
-
-  .kpi-value {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 38px;
-    font-weight: 300;
-    color: var(--text);
-    line-height: 1;
-    margin-bottom: 8px;
-  }
-
-  .kpi-value.gold { color: var(--gold); }
-  .kpi-value.green { color: var(--green); }
-
-  .kpi-sub {
-    font-size: 11px;
-    color: var(--muted);
-    line-height: 1.4;
-  }
-
-  /* ── COMPARATIF TABLE ── */
-  .compare-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 28px;
-  }
-
-  .compare-table thead tr {
-    border-bottom: 1px solid var(--border);
-  }
-
-  .compare-table th {
-    font-size: 9px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--muted);
-    padding: 12px 16px;
-    text-align: left;
-    font-weight: 400;
-  }
-
-  .compare-table td {
-    padding: 14px 16px;
-    font-size: 13px;
-    border-bottom: 1px solid var(--border);
-    color: var(--text);
-    transition: background 0.2s;
-  }
-
-  .compare-table tr:hover td { background: var(--surface2); }
-
-  .compare-table .val-bad  { color: var(--red); font-weight: 500; }
-  .compare-table .val-ok   { color: var(--text); }
-  .compare-table .val-good { color: var(--green); font-weight: 500; }
-
-  .badge {
-    display: inline-block;
-    padding: 2px 8px;
-    border-radius: 2px;
-    font-size: 10px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-  }
-
-  .badge-red   { background: rgba(248,113,113,0.12); color: var(--red); }
-  .badge-green { background: rgba(74,222,128,0.12); color: var(--green); }
-  .badge-gold  { background: rgba(201,169,110,0.12); color: var(--gold); }
-
-  /* ── SCENARIOS ── */
-  .scenarios {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 1px;
-    background: var(--border);
-    border: 1px solid var(--border);
-    margin-top: 28px;
-  }
-
-  .scenario {
-    background: var(--surface);
-    padding: 32px 28px;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .scenario.highlight {
-    background: rgba(201,169,110,0.06);
-  }
-
-  .scenario.highlight::before {
-    content: 'CIBLE RECOMMANDÉE';
-    position: absolute;
-    top: 12px; right: 12px;
-    font-size: 8px;
-    letter-spacing: 2px;
-    color: var(--gold);
-    border: 1px solid var(--gold-dim);
-    padding: 3px 8px;
-  }
-
-  .scenario-label {
-    font-size: 9px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 16px;
-  }
-
-  .scenario-pct {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 48px;
-    font-weight: 300;
-    color: var(--text);
-    line-height: 1;
-    margin-bottom: 4px;
-  }
-
-  .scenario.highlight .scenario-pct { color: var(--gold); }
-
-  .scenario-ca {
-    font-size: 22px;
-    font-family: 'Cormorant Garamond', serif;
-    font-weight: 300;
-    color: var(--muted);
-    margin-bottom: 16px;
-  }
-
-  .scenario.highlight .scenario-ca { color: var(--text); }
-
-  .scenario-gain {
-    font-size: 12px;
-    color: var(--green);
-    padding: 6px 12px;
-    background: rgba(74,222,128,0.08);
-    display: inline-block;
-  }
-
-  /* ── CONCURRENTS ── */
-  .concurrent-list {
-    margin-top: 24px;
-    display: grid;
-    gap: 1px;
-    background: var(--border);
-    border: 1px solid var(--border);
-  }
-
-  .concurrent-item {
-    background: var(--surface);
-    padding: 14px 20px;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    font-size: 13px;
-    transition: background 0.2s;
-  }
-
-  .concurrent-item:hover { background: var(--surface2); }
-
-  .concurrent-name { flex: 1.2; font-weight: 400; }
-  .concurrent-type { flex: 1.5; color: var(--muted); font-size: 12px; }
-  .concurrent-loc  { flex: 0.8; color: var(--muted); font-size: 12px; }
-  .concurrent-note { flex: 0.4; text-align: right; color: var(--gold); font-size: 13px; font-family: 'Cormorant Garamond', serif; }
-
-  /* ── ACTION ITEMS ── */
-  .actions-grid {
-    display: grid;
-    gap: 1px;
-    background: var(--border);
-    border: 1px solid var(--border);
-    margin-top: 24px;
-  }
-
-  .action-item {
-    background: var(--surface);
-    padding: 0;
-    display: flex;
-    align-items: stretch;
-    transition: background 0.2s;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .action-item::before {
-    content: '';
-    position: absolute;
-    left: 0; top: 0; bottom: 0;
-    width: 3px;
-    background: transparent;
-    transition: background 0.3s;
-  }
-
-  .action-item.done::before { background: var(--gold); }
-
-  .action-item:hover { background: var(--surface2); }
-
-  .action-checkbox-col {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px 20px 20px 24px;
-    flex-shrink: 0;
-  }
-
-  .action-checkbox {
-    width: 18px; height: 18px;
-    border: 1px solid rgba(255,255,255,0.2);
-    border-radius: 2px;
-    background: transparent;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.25s;
-    flex-shrink: 0;
-  }
-
-  .action-item.done .action-checkbox {
-    background: var(--gold);
-    border-color: var(--gold);
-  }
-
-  .action-checkbox svg {
-    opacity: 0;
-    transition: opacity 0.25s;
-    width: 11px; height: 11px;
-  }
-
-  .action-item.done .action-checkbox svg { opacity: 1; }
-
-  .action-content {
-    padding: 18px 20px 18px 0;
-    flex: 1;
-  }
-
-  .action-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 4px;
-  }
-
-  .action-title {
-    font-size: 14px;
-    font-weight: 400;
-    color: var(--text);
-    transition: color 0.25s;
-  }
-
-  .action-item.done .action-title {
-    color: var(--muted);
-    text-decoration: line-through;
-    text-decoration-color: var(--gold-dim);
-  }
-
-  .action-tag {
-    font-size: 8px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    padding: 2px 8px;
-    border-radius: 2px;
-  }
-
-  .tag-quick  { background: rgba(96,165,250,0.1); color: var(--blue); }
-  .tag-moyen  { background: rgba(201,169,110,0.1); color: var(--gold); }
-  .tag-long   { background: rgba(248,113,113,0.1); color: var(--red); }
-
-  .action-desc {
-    font-size: 12px;
-    color: var(--muted);
-    line-height: 1.5;
-    max-width: 600px;
-  }
-
-  .action-item.done .action-desc { color: rgba(107,107,114,0.5); }
-
-  .action-meta {
-    padding: 18px 24px 18px 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: flex-end;
-    gap: 6px;
-    flex-shrink: 0;
-    min-width: 100px;
-  }
-
-  .action-impact {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 18px;
-    color: var(--green);
-  }
-
-  .action-impact-label {
-    font-size: 9px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--muted);
-  }
-
-  /* ── FOOTER ── */
-  footer {
-    border-top: 1px solid var(--border);
-    padding: 32px 60px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 16px;
-  }
-
-  .footer-brand {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 16px;
-    color: var(--gold);
-    letter-spacing: 1px;
-  }
-
-  .footer-note {
-    font-size: 11px;
-    color: var(--muted);
-  }
-
-  /* ── DIVIDER ── */
-  .gold-divider {
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
-    margin: 60px 0 0;
-    opacity: 0.4;
-  }
-
-  /* ── ZONE VISUELLE ── */
-  .zone-visual {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    padding: 36px;
-    margin-top: 28px;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .zone-visual::before {
-    content: '';
-    position: absolute;
-    top: -60px; right: -60px;
-    width: 300px; height: 300px;
-    border-radius: 50%;
-    border: 1px solid rgba(201,169,110,0.1);
-  }
-
-  .zone-visual::after {
-    content: '';
-    position: absolute;
-    top: -100px; right: -100px;
-    width: 400px; height: 400px;
-    border-radius: 50%;
-    border: 1px solid rgba(201,169,110,0.05);
-  }
-
-  .zone-communes {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 12px;
-    position: relative;
-  }
-
-  .commune-pill {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    padding: 12px 16px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    transition: border-color 0.2s;
-  }
-
-  .commune-pill:hover { border-color: var(--gold-dim); }
-  .commune-pill.anchor { border-color: var(--gold-dim); background: rgba(201,169,110,0.05); }
-
-  .commune-name { font-size: 13px; color: var(--text); }
-  .commune-pop  { font-family: 'Cormorant Garamond', serif; font-size: 16px; color: var(--gold); }
-
-  /* ── ANIMATE IN ── */
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  .fade-in { animation: fadeUp 0.6s ease both; }
-  .fade-in:nth-child(2) { animation-delay: 0.1s; }
-  .fade-in:nth-child(3) { animation-delay: 0.2s; }
-  .fade-in:nth-child(4) { animation-delay: 0.3s; }
-
-  @media (max-width: 768px) {
-    header, main, footer { padding-left: 24px; padding-right: 24px; }
-    .progress-bar-wrapper { padding-left: 24px; padding-right: 24px; }
-    .scenarios { grid-template-columns: 1fr; }
-    .kpi-grid  { grid-template-columns: 1fr 1fr; }
-    header h1  { font-size: 32px; }
-  }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:       #ffffff;
+  --surface:  #f8f9fb;
+  --surface2: #f1f3f7;
+  --border:   #e1e4e8;
+  --purple:   #6366f1;
+  --purple-dark: #4f46e5;
+  --text:     #1a202c;
+  --muted:    #4a5568;
+  --green:    #10b981;
+  --red:      #ef4444;
+  --orange:   #f97316;
+  --gold:     #d4af37;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-weight: 400;
+  line-height: 1.7;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ═══ PASSWORD OVERLAY ═══ */
+#passwordOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(255,255,255,0.98);
+  backdrop-filter: blur(8px);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.4s;
+}
+
+#passwordOverlay.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.password-box {
+  background: white;
+  border: 1px solid var(--border);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.08);
+  border-radius: 8px;
+  padding: 48px;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+}
+
+.password-box img {
+  width: 80px;
+  margin-bottom: 24px;
+}
+
+.password-box h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 26px;
+  font-weight: 400;
+  margin-bottom: 12px;
+  color: var(--text);
+}
+
+.password-box p {
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 28px;
+}
+
+.password-box input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-size: 14px;
+  font-family: 'DM Sans', sans-serif;
+  outline: none;
+  transition: border-color 0.2s;
+  margin-bottom: 12px;
+}
+
+.password-box input:focus {
+  border-color: var(--purple);
+}
+
+.password-box button {
+  width: 100%;
+  padding: 14px 24px;
+  background: linear-gradient(135deg, var(--purple), var(--purple-dark));
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.password-box button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(99,102,241,0.3);
+}
+
+.password-box .error {
+  font-size: 12px;
+  color: var(--red);
+  margin-top: 12px;
+  display: none;
+}
+
+/* ═══ HEADER ═══ */
+header {
+  position: relative;
+  padding: 60px 60px 50px;
+  border-bottom: 2px solid var(--border);
+  background: linear-gradient(135deg, #faf8ff 0%, #ffffff 100%);
+}
+
+.header-logo-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 32px;
+}
+
+.header-logo-row img {
+  width: 70px;
+  height: 70px;
+  flex-shrink: 0;
+}
+
+.header-brand {
+  display: flex;
+  flex-direction: column;
+}
+
+.header-brand-name {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 2px;
+}
+
+.header-brand-tagline {
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.header-eyebrow {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--purple);
+  margin-bottom: 16px;
+}
+
+header h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(32px, 5vw, 52px);
+  font-weight: 400;
+  line-height: 1.2;
+  color: var(--text);
+  margin-bottom: 10px;
+}
+
+header h1 em {
+  font-style: italic;
+  color: var(--purple);
+}
+
+.header-sub {
+  font-size: 14px;
+  color: var(--muted);
+  margin-top: 12px;
+}
+
+.header-meta {
+  display: flex;
+  gap: 32px;
+  margin-top: 28px;
+  flex-wrap: wrap;
+}
+
+.meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.meta-label {
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.meta-value {
+  font-size: 14px;
+  color: var(--text);
+  font-weight: 500;
+}
+
+/* ═══ PROGRESS BAR (sticky) ═══ */
+.progress-bar-wrapper {
+  background: rgba(255,255,255,0.95);
+  border-bottom: 1px solid var(--border);
+  padding: 16px 60px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(12px);
+}
+
+.progress-label {
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.progress-track {
+  flex: 1;
+  height: 4px;
+  background: var(--surface2);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--purple), var(--purple-dark));
+  border-radius: 4px;
+  transition: width 0.6s cubic-bezier(0.4,0,0.2,1);
+}
+
+.progress-pct {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--purple);
+  min-width: 52px;
+  text-align: right;
+}
+
+/* ═══ MAIN ═══ */
+main {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 56px 60px 120px;
+}
+
+.section-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 32px;
+  font-weight: 400;
+  color: var(--text);
+  margin-bottom: 10px;
+  margin-top: 64px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.section-title::before {
+  content: '';
+  width: 4px;
+  height: 32px;
+  background: linear-gradient(180deg, var(--purple), var(--purple-dark));
+  border-radius: 2px;
+}
+
+.section-desc {
+  font-size: 14px;
+  color: var(--muted);
+  margin-bottom: 28px;
+  margin-left: 52px;
+}
+
+.divider {
+  height: 1px;
+  background: var(--border);
+  margin: 60px 0;
+}
+
+/* ═══ KPI GRID ═══ */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.kpi-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 24px;
+  transition: all 0.3s;
+}
+
+.kpi-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(99,102,241,0.12);
+}
+
+.kpi-label {
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.kpi-value {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 32px;
+  font-weight: 400;
+  line-height: 1;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+
+.kpi-value.purple { color: var(--purple); }
+.kpi-value.green { color: var(--green); }
+
+.kpi-sub {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+/* ═══ ZONE VISUAL ═══ */
+.zone-visual {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 32px;
+  margin-top: 24px;
+}
+
+.zone-communes {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.commune-pill {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.2s;
+}
+
+.commune-pill:hover {
+  border-color: var(--purple);
+  transform: translateY(-1px);
+}
+
+.commune-pill.anchor {
+  border-color: var(--purple);
+  background: linear-gradient(135deg, #faf8ff, #ffffff);
+}
+
+.commune-name {
+  font-size: 13px;
+  color: var(--text);
+  font-weight: 500;
+}
+
+.commune-pop {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  color: var(--purple);
+  font-weight: 600;
+}
+
+/* ═══ SCENARIOS ═══ */
+.scenarios {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.scenario {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 28px;
+  position: relative;
+}
+
+.scenario.highlight {
+  background: linear-gradient(135deg, #faf8ff, #ffffff);
+  border-color: var(--purple);
+  box-shadow: 0 4px 16px rgba(99,102,241,0.12);
+}
+
+.scenario.highlight::before {
+  content: 'CIBLE RECOMMANDÉE';
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  font-size: 8px;
+  letter-spacing: 2px;
+  color: var(--purple);
+  background: white;
+  border: 1px solid var(--purple);
+  padding: 3px 8px;
+  border-radius: 3px;
+}
+
+.scenario-label {
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+
+.scenario-pct {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 42px;
+  font-weight: 400;
+  line-height: 1;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+
+.scenario.highlight .scenario-pct {
+  color: var(--purple);
+}
+
+.scenario-ca {
+  font-size: 18px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 500;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+
+.scenario-gain {
+  font-size: 12px;
+  color: var(--green);
+  padding: 6px 12px;
+  background: rgba(16,185,129,0.1);
+  border-radius: 4px;
+  display: inline-block;
+}
+
+/* ═══ DIAGNOSTIC BOXES ═══ */
+.diagnostic-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 28px;
+  margin-top: 24px;
+}
+
+.diagnostic-box h3 {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 16px;
+}
+
+.diagnostic-box ul {
+  list-style: none;
+  padding: 0;
+}
+
+.diagnostic-box li {
+  padding: 10px 0;
+  padding-left: 24px;
+  position: relative;
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.6;
+}
+
+.diagnostic-box li::before {
+  content: '•';
+  position: absolute;
+  left: 8px;
+  color: var(--purple);
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.diagnostic-box.success li::before {
+  color: var(--green);
+}
+
+.diagnostic-box.warning li::before {
+  color: var(--orange);
+}
+
+.diagnostic-box.danger li::before {
+  color: var(--red);
+}
+
+/* ═══ PRIORITIES GRID ═══ */
+.priorities-grid {
+  display: grid;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.priority-item {
+  background: white;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--purple);
+  border-radius: 6px;
+  padding: 24px 28px;
+  transition: all 0.2s;
+}
+
+.priority-item:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+}
+
+.priority-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.priority-number {
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, var(--purple), var(--purple-dark));
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.priority-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.priority-desc {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.6;
+  margin-left: 44px;
+}
+
+/* ═══ ACTION ITEMS ═══ */
+.actions-grid {
+  display: grid;
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-top: 24px;
+}
+
+.action-item {
+  background: white;
+  padding: 0;
+  display: flex;
+  align-items: stretch;
+  transition: all 0.2s;
+  cursor: pointer;
+  position: relative;
+}
+
+.action-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: transparent;
+  transition: background 0.3s;
+}
+
+.action-item.done::before {
+  background: var(--green);
+}
+
+.action-item:hover {
+  background: var(--surface);
+}
+
+.action-checkbox-col {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 20px 20px 24px;
+  flex-shrink: 0;
+}
+
+.action-checkbox {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--border);
+  border-radius: 4px;
+  background: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s;
+}
+
+.action-item.done .action-checkbox {
+  background: var(--green);
+  border-color: var(--green);
+}
+
+.action-checkbox svg {
+  opacity: 0;
+  transition: opacity 0.25s;
+  width: 12px;
+  height: 12px;
+}
+
+.action-item.done .action-checkbox svg {
+  opacity: 1;
+}
+
+.action-content {
+  padding: 18px 20px 18px 0;
+  flex: 1;
+}
+
+.action-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+}
+
+.action-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  transition: color 0.25s;
+}
+
+.action-item.done .action-title {
+  color: var(--muted);
+  text-decoration: line-through;
+}
+
+.action-tag {
+  font-size: 9px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 3px;
+  font-weight: 600;
+}
+
+.tag-quick { background: rgba(16,185,129,0.1); color: var(--green); }
+.tag-moyen { background: rgba(249,115,22,0.1); color: var(--orange); }
+.tag-long  { background: rgba(239,68,68,0.1); color: var(--red); }
+
+.action-desc {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+  max-width: 600px;
+}
+
+.action-item.done .action-desc {
+  color: #a0aec0;
+}
+
+.action-meta {
+  padding: 18px 24px 18px 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 4px;
+  flex-shrink: 0;
+  min-width: 90px;
+}
+
+.action-impact {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--green);
+}
+
+.action-impact-label {
+  font-size: 9px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* ═══ PLAN 30 JOURS ═══ */
+.plan-30-grid {
+  display: grid;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.week-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 24px;
+  transition: all 0.2s;
+}
+
+.week-card:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+}
+
+.week-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.week-number {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, var(--purple), var(--purple-dark));
+  color: white;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.week-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.week-tasks {
+  list-style: none;
+  padding: 0;
+}
+
+.week-tasks li {
+  padding: 8px 0;
+  padding-left: 24px;
+  position: relative;
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.6;
+}
+
+.week-tasks li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--purple);
+  font-weight: bold;
+}
+
+/* ═══ FOOTER ═══ */
+footer {
+  border-top: 2px solid var(--border);
+  padding: 32px 60px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  background: var(--surface);
+}
+
+.footer-brand {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.footer-note {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+/* ═══ RESPONSIVE ═══ */
+@media (max-width: 768px) {
+  header, main, footer { padding-left: 24px; padding-right: 24px; }
+  .progress-bar-wrapper { padding-left: 24px; padding-right: 24px; }
+  .scenarios { grid-template-columns: 1fr; }
+  .kpi-grid { grid-template-columns: 1fr 1fr; }
+  header h1 { font-size: 28px; }
+}
 </style>
 </head>
 <body>
 
-<!-- ═══════════════════════════════════════════ HEADER -->
+<!-- ═══ PASSWORD OVERLAY ═══ -->
+<div id="passwordOverlay">
+  <div class="password-box">
+    <img src="data:image/jpeg;base64,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" alt="Dynamis Académie">
+    <h2>Document protégé</h2>
+    <p>Veuillez entrer le mot de passe pour accéder</p>
+    <input type="password" id="passwordInput" placeholder="Mot de passe">
+    <button onclick="checkPassword()">Valider</button>
+    <div class="error" id="errorMsg">Mot de passe incorrect</div>
+  </div>
+</div>
+
+<!-- ═══ HEADER ═══ -->
 <header>
-  <div class="header-eyebrow">Dynamis Académie — Analyse R1</div>
-  <h1>L'Opticien de Poisy<br><em>Potentiel de zone</em></h1>
+  <div class="header-logo-row">
+    <img src="data:image/jpeg;base64,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" alt="Dynamis Académie Logo">
+    <div class="header-brand">
+      <div class="header-brand-name">Dynamis Académie</div>
+      <div class="header-brand-tagline">De la vision à l'action</div>
+    </div>
+  </div>
+
+  <div class="header-eyebrow">Analyse R1 — Confidentiel</div>
+  <h1>L'Opticien de Poisy<br><em>Diagnostic & Potentiel</em></h1>
   <p class="header-sub">Isochrone 15 min — Poisy 74330 — Haute-Savoie</p>
+
   <div class="header-meta">
     <div class="meta-item">
       <span class="meta-label">Dirigeant</span>
@@ -684,59 +889,60 @@
   </div>
 </header>
 
-<!-- ═══════════════════════════════════════════ PROGRESS BAR -->
+<!-- ═══ PROGRESS BAR (sticky) ═══ -->
 <div class="progress-bar-wrapper">
   <span class="progress-label">Plan d'action</span>
   <div class="progress-track">
-    <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+    <div class="progress-fill" id="progressFill" style="width:0%"></div>
   </div>
   <span class="progress-pct" id="progressPct">0 %</span>
 </div>
 
-<!-- ═══════════════════════════════════════════ MAIN -->
+<!-- ═══ MAIN CONTENT ═══ -->
 <main>
 
-  <!-- ─── SECTION : CHIFFRES CLÉS ─── -->
+  <!-- PARTIE 1 : VISION STRATÉGIQUE (POTENTIEL) -->
   <h2 class="section-title">Chiffres clés</h2>
-  <p class="section-desc">Situation actuelle de L'Opticien de Poisy vs potentiel identifié</p>
+  <p class="section-desc">Situation actuelle vs potentiel de marché identifié</p>
 
   <div class="kpi-grid">
-    <div class="kpi-card fade-in">
+    <div class="kpi-card">
       <div class="kpi-label">CA actuel</div>
-      <div class="kpi-value gold">140 K€</div>
-      <div class="kpi-sub">Dernier exercice complet<br>Tendance : stagnant</div>
+      <div class="kpi-value purple">140 K€</div>
+      <div class="kpi-sub">Dernier exercice<br>Tendance : stagnant</div>
     </div>
-    <div class="kpi-card fade-in">
+    <div class="kpi-card">
       <div class="kpi-label">Panier moyen</div>
       <div class="kpi-value">450 €</div>
-      <div class="kpi-sub">Moy. nationale indépendants<br>~403 € → +47 € d'avance</div>
+      <div class="kpi-sub">Moy. nationale ~403 €<br>+47 € d'avance</div>
     </div>
-    <div class="kpi-card fade-in">
+    <div class="kpi-card">
       <div class="kpi-label">Marge brute</div>
       <div class="kpi-value">63 %</div>
-      <div class="kpi-sub">Moy. secteur : 58-65 %<br>Niveau correct</div>
+      <div class="kpi-sub">Secteur : 58–65 %<br>Niveau correct</div>
     </div>
-    <div class="kpi-card fade-in">
+    <div class="kpi-card">
       <div class="kpi-label">Note Google</div>
-      <div class="kpi-value gold">4,7 / 5</div>
-      <div class="kpi-sub">57 avis — Réputation solide<br>Supérieure à 5 concurrents</div>
+      <div class="kpi-value purple">4,7 / 5</div>
+      <div class="kpi-sub">57 avis — Réputation solide</div>
     </div>
-    <div class="kpi-card fade-in">
+    <div class="kpi-card">
       <div class="kpi-label">Taux de transfo</div>
       <div class="kpi-value green">9 / 10</div>
-      <div class="kpi-sub">Excellente conversion<br>Moy. secteur : 6-7/10</div>
+      <div class="kpi-sub">Excellent<br>Moy. : 6–7/10</div>
     </div>
-    <div class="kpi-card fade-in">
+    <div class="kpi-card">
       <div class="kpi-label">Taux 2ème paire</div>
-      <div class="kpi-value">80 %</div>
-      <div class="kpi-sub">Moy. nationale : ~30-40 %<br>Exceptionnellement élevé</div>
+      <div class="kpi-value green">80 %</div>
+      <div class="kpi-sub">Exceptionnellement élevé<br>Moy. : 30–40 %</div>
     </div>
   </div>
 
-  <!-- ─── SECTION : ZONE ISOCHRONE ─── -->
-  <div class="gold-divider"></div>
+  <div class="divider"></div>
+
+  <!-- ZONE ISOCHRONE -->
   <h2 class="section-title">Zone isochrone 15 min</h2>
-  <p class="section-desc">Communes couvertes par la zone de chalandise — population estimée 2025</p>
+  <p class="section-desc">Communes couvertes — population estimée 2025</p>
 
   <div class="zone-visual">
     <div class="zone-communes">
@@ -778,181 +984,27 @@
       </div>
     </div>
 
-    <div style="margin-top: 28px; padding-top: 24px; border-top: 1px solid var(--border); display: flex; gap: 40px; flex-wrap: wrap;">
+    <div style="margin-top:28px;padding-top:24px;border-top:1px solid var(--border);display:flex;gap:40px;flex-wrap:wrap">
       <div>
         <div class="kpi-label">Population totale zone</div>
-        <div style="font-family: 'Cormorant Garamond', serif; font-size: 36px; color: var(--text);">~67 000 <span style="font-size: 18px; color: var(--muted)">habitants</span></div>
+        <div style="font-family:'DM Sans',sans-serif;font-size:32px;color:var(--text);font-weight:600">~67 000 <span style="font-size:16px;color:var(--muted);font-weight:400">habitants</span></div>
       </div>
       <div>
         <div class="kpi-label">Dépense optique / hab. / an</div>
-        <div style="font-family: 'Cormorant Garamond', serif; font-size: 36px; color: var(--text);">111 € <span style="font-size: 14px; color: var(--muted)">Source Octika 2025</span></div>
+        <div style="font-family:'DM Sans',sans-serif;font-size:32px;color:var(--text);font-weight:600">111 € <span style="font-size:14px;color:var(--muted);font-weight:400">Octika 2025</span></div>
       </div>
       <div>
         <div class="kpi-label">Potentiel brut de zone</div>
-        <div style="font-family: 'Cormorant Garamond', serif; font-size: 36px; color: var(--gold);">~7,44 M€</div>
+        <div style="font-family:'DM Sans',sans-serif;font-size:32px;color:var(--purple);font-weight:600">~7,44 M€</div>
       </div>
     </div>
   </div>
 
-  <!-- ─── SECTION : COMPARATIF MARCHÉ ─── -->
-  <div class="gold-divider"></div>
-  <h2 class="section-title">Indicateurs vs marché national</h2>
-  <p class="section-desc">Sources : Octika/GfK avril 2025 · Xerfi 2025 · PropulsebyCA 2025 · INSEE 2024</p>
+  <div class="divider"></div>
 
-  <table class="compare-table">
-    <thead>
-      <tr>
-        <th>Indicateur</th>
-        <th>Philippe</th>
-        <th>Moyenne nationale</th>
-        <th>Écart</th>
-        <th>Lecture</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>CA annuel</td>
-        <td class="val-bad">140 000 €</td>
-        <td>~350 000 € (indép.)</td>
-        <td class="val-bad">−210 K€</td>
-        <td><span class="badge badge-red">Sous-captation</span></td>
-      </tr>
-      <tr>
-        <td>Panier moyen</td>
-        <td class="val-good">450 €</td>
-        <td>~403 € (indép.)</td>
-        <td class="val-good">+47 €</td>
-        <td><span class="badge badge-green">Avantage</span></td>
-      </tr>
-      <tr>
-        <td>Marge brute</td>
-        <td class="val-good">63 %</td>
-        <td>58 – 65 %</td>
-        <td class="val-good">Dans la norme</td>
-        <td><span class="badge badge-green">OK</span></td>
-      </tr>
-      <tr>
-        <td>Taux de transformation</td>
-        <td class="val-good">90 %</td>
-        <td>~60 – 70 %</td>
-        <td class="val-good">+20 pts</td>
-        <td><span class="badge badge-green">Excellent</span></td>
-      </tr>
-      <tr>
-        <td>Taux 2ème paire</td>
-        <td class="val-good">80 %</td>
-        <td>~30 – 40 %</td>
-        <td class="val-good">+40 pts</td>
-        <td><span class="badge badge-green">Exceptionnel</span></td>
-      </tr>
-      <tr>
-        <td>Note Google</td>
-        <td class="val-good">4,7 / 5</td>
-        <td>~4,3 – 4,5</td>
-        <td class="val-good">+0,3</td>
-        <td><span class="badge badge-green">Avantage</span></td>
-      </tr>
-      <tr>
-        <td>Process écrits formalisés</td>
-        <td class="val-bad">Aucun</td>
-        <td>Variable</td>
-        <td class="val-bad">Risque opérat.</td>
-        <td><span class="badge badge-red">À structurer</span></td>
-      </tr>
-      <tr>
-        <td>Communication locale</td>
-        <td class="val-bad">Irrégulière</td>
-        <td>Active chez enseignes</td>
-        <td class="val-bad">Invisible</td>
-        <td><span class="badge badge-red">Levier majeur</span></td>
-      </tr>
-    </tbody>
-  </table>
-
-  <!-- ─── SECTION : CONCURRENTS ─── -->
-  <div class="gold-divider"></div>
-  <h2 class="section-title">Concurrents identifiés</h2>
-  <p class="section-desc">11 opticiens recensés dans la zone isochrone — concentration forte à Épagny</p>
-
-  <div class="concurrent-list">
-    <div class="concurrent-item" style="background: var(--surface2); border-bottom: 1px solid var(--border);">
-      <span class="concurrent-name" style="font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted);">Nom</span>
-      <span class="concurrent-type" style="font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted);">Type</span>
-      <span class="concurrent-loc"  style="font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted);">Lieu</span>
-      <span class="concurrent-note" style="font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted);">Note</span>
-    </div>
-    <div class="concurrent-item">
-      <span class="concurrent-name">GrandOptical Épagny</span>
-      <span class="concurrent-type">Succursale nationale</span>
-      <span class="concurrent-loc">Épagny</span>
-      <span class="concurrent-note">4,7</span>
-    </div>
-    <div class="concurrent-item">
-      <span class="concurrent-name">Générale d'Optique Épagny</span>
-      <span class="concurrent-type">Succursale nationale</span>
-      <span class="concurrent-loc">Épagny</span>
-      <span class="concurrent-note">4,8</span>
-    </div>
-    <div class="concurrent-item">
-      <span class="concurrent-name">Optic 2000 Épagny</span>
-      <span class="concurrent-type">Coopérative</span>
-      <span class="concurrent-loc">Épagny</span>
-      <span class="concurrent-note">4,8</span>
-    </div>
-    <div class="concurrent-item">
-      <span class="concurrent-name">Optical Center Épagny ×2</span>
-      <span class="concurrent-type">Franchise (2 points)</span>
-      <span class="concurrent-loc">Épagny</span>
-      <span class="concurrent-note">4,6 / 3,4</span>
-    </div>
-    <div class="concurrent-item">
-      <span class="concurrent-name">Alain Afflelou Épagny</span>
-      <span class="concurrent-type">Franchise (récente)</span>
-      <span class="concurrent-loc">Épagny</span>
-      <span class="concurrent-note">5,0</span>
-    </div>
-    <div class="concurrent-item">
-      <span class="concurrent-name">Auchan Optique Épagny</span>
-      <span class="concurrent-type">GSA (grande surface)</span>
-      <span class="concurrent-loc">Épagny</span>
-      <span class="concurrent-note">4,3</span>
-    </div>
-    <div class="concurrent-item">
-      <span class="concurrent-name">Krys Épagny (Auchan)</span>
-      <span class="concurrent-type">Coopérative</span>
-      <span class="concurrent-loc">Épagny</span>
-      <span class="concurrent-note">4,8</span>
-    </div>
-    <div class="concurrent-item">
-      <span class="concurrent-name">Le Chalet des Lunettes</span>
-      <span class="concurrent-type">Indépendant</span>
-      <span class="concurrent-loc">Sillingy</span>
-      <span class="concurrent-note">4,9</span>
-    </div>
-    <div class="concurrent-item">
-      <span class="concurrent-name">Balme Optique</span>
-      <span class="concurrent-type">Indépendant</span>
-      <span class="concurrent-loc">La Balme</span>
-      <span class="concurrent-note">5,0</span>
-    </div>
-    <div class="concurrent-item">
-      <span class="concurrent-name">Écouter Voir</span>
-      <span class="concurrent-type">Mutualiste</span>
-      <span class="concurrent-loc">Meythet</span>
-      <span class="concurrent-note">4,8</span>
-    </div>
-    <div class="concurrent-item" style="background: rgba(201,169,110,0.05); border-top: 1px solid var(--gold-dim);">
-      <span class="concurrent-name" style="color: var(--gold); font-weight: 500;">📍 L'Opticien de Poisy</span>
-      <span class="concurrent-type" style="color: var(--gold);">Indépendant — Votre client</span>
-      <span class="concurrent-loc" style="color: var(--gold);">Poisy</span>
-      <span class="concurrent-note" style="color: var(--gold);">4,7</span>
-    </div>
-  </div>
-
-  <!-- ─── SECTION : SCÉNARIOS ─── -->
-  <div class="gold-divider"></div>
+  <!-- SCÉNARIOS -->
   <h2 class="section-title">Scénarios de parts de marché</h2>
-  <p class="section-desc">Potentiel réaliste selon niveau de captation — base : ~7,44 M€ pour 12 acteurs</p>
+  <p class="section-desc">Potentiel réaliste selon niveau de captation — base : ~7,44 M€ pour 12 acteurs (11 concurrents + vous)</p>
 
   <div class="scenarios">
     <div class="scenario">
@@ -960,43 +1012,191 @@
       <div class="scenario-pct">6,5 %</div>
       <div class="scenario-ca">~483 000 €</div>
       <div class="scenario-gain">+ 343 K€ vs aujourd'hui</div>
-      <p style="font-size: 12px; color: var(--muted); margin-top: 16px;">Statu quo amélioré — peu ou pas d'actions nouvelles mises en place</p>
+      <p style="font-size:13px;color:var(--muted);margin-top:16px">Statu quo — peu d'actions nouvelles</p>
     </div>
     <div class="scenario highlight">
       <div class="scenario-label">Cible recommandée</div>
       <div class="scenario-pct">8,5 %</div>
       <div class="scenario-ca">~632 000 €</div>
       <div class="scenario-gain">+ 492 K€ vs aujourd'hui</div>
-      <p style="font-size: 12px; color: var(--muted); margin-top: 16px;">Axes Dynamis Académie activés — progression sur 12–24 mois</p>
+      <p style="font-size:13px;color:var(--muted);margin-top:16px">Axes Dynamis activés — 12–24 mois</p>
     </div>
     <div class="scenario">
       <div class="scenario-label">Optimiste</div>
       <div class="scenario-pct">12 %</div>
       <div class="scenario-ca">~893 000 €</div>
       <div class="scenario-gain">+ 753 K€ vs aujourd'hui</div>
-      <p style="font-size: 12px; color: var(--muted); margin-top: 16px;">Excellence opérationnelle + recrutement + communication soutenue</p>
+      <p style="font-size:13px;color:var(--muted);margin-top:16px">Excellence opérationnelle + recrutement</p>
     </div>
   </div>
 
-  <div style="background: var(--surface); border: 1px solid var(--border); border-top: none; padding: 20px 28px; display: flex; gap: 12px; align-items: flex-start;">
-    <div style="color: var(--gold); font-size: 18px; flex-shrink: 0;">◆</div>
-    <p style="font-size: 13px; color: var(--muted); line-height: 1.6;"><strong style="color: var(--text);">Point clé :</strong> Philippe est le seul opticien de Poisy (~9 700 hab.). Chaque habitant de Poisy qui achète ses lunettes à Épagny est un CA non capté. Le premier levier n'est pas le prix — c'est la <strong style="color: var(--gold);">visibilité locale</strong>.</p>
+  <div class="divider"></div>
+
+  <!-- PARTIE 2 : DIAGNOSTIC OPÉRATIONNEL (TERRAIN) -->
+  <h2 class="section-title">Photo globale du magasin</h2>
+  <p class="section-desc">État des lieux — identité, organisation, performance</p>
+
+  <div class="diagnostic-box">
+    <h3>Identité / Organisation</h3>
+    <ul>
+      <li>Magasin indépendant ouvert en 2012</li>
+      <li>Philippe travaille seul (0 salarié)</li>
+      <li>Centrale d'achat : LUZ | Logiciel : I-Voir Net</li>
+      <li><strong>Pas de tableau de bord, pas d'extraction de statistiques</strong></li>
+      <li><strong>Pas de cohérence de marque</strong> (image et messages non alignés)</li>
+      <li><strong>Pas de process</strong> (vente, SAV, relances, parcours client)</li>
+      <li><strong>Expérience client non définie / non visible</strong></li>
+    </ul>
   </div>
 
-  <!-- ─── SECTION : PLAN D'ACTION ─── -->
-  <div class="gold-divider"></div>
-  <h2 class="section-title">Plan d'action</h2>
-  <p class="section-desc">Cliquez sur chaque action pour la marquer comme réalisée — votre progression s'affiche en haut de page</p>
+  <div class="diagnostic-box">
+    <h3>E-réputation / Présence digitale</h3>
+    <ul>
+      <li>Facebook : 139 followers — publication irrégulière</li>
+      <li>Instagram : 94 followers — 40 publications</li>
+      <li>Google : 4,7/5 — 57 avis (plutôt bon, mais perfectible)</li>
+    </ul>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- CE QUI FONCTIONNE -->
+  <h2 class="section-title">Ce qui fonctionne déjà</h2>
+  <p class="section-desc">Points d'appui — leviers existants à capitaliser</p>
+
+  <div class="diagnostic-box success">
+    <ul>
+      <li><strong>Ancienneté depuis 2012</strong> → crédibilité locale établie</li>
+      <li><strong>Environnement commercial porteur</strong> : poste, coiffeur, kiné, pharmacie, supermarché = flux naturel et synergies possibles</li>
+      <li><strong>Services techniques à forte valeur</strong> : adaptations lentilles + salle d'examen de vue = différenciants réels</li>
+      <li><strong>Note Google 4,7/5</strong> : base saine, possibilité de passer à 4,8–4,9</li>
+    </ul>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- FREINS MAJEURS -->
+  <h2 class="section-title">Freins majeurs identifiés</h2>
+  <p class="section-desc">Ce qui plombe la croissance — points critiques à traiter en priorité</p>
+
+  <div class="diagnostic-box danger">
+    <h3>A) Pilotage "à l'aveugle"</h3>
+    <ul>
+      <li>Pas de tableau de bord, pas de stats extraites</li>
+      <li>Décisions au ressenti → difficulté à améliorer panier, marge, régularité</li>
+    </ul>
+  </div>
+
+  <div class="diagnostic-box danger">
+    <h3>B) Image et confiance : rupture entre promesse et réalité</h3>
+    <ul>
+      <li>Pour accéder à la salle d'examen, <strong>il faut traverser l'atelier</strong></li>
+      <li><strong>Atelier en désordre</strong>, machines présentes mais certaines en panne</li>
+      <li><strong>Apparence globale pas nette</strong> → Or, pour un client, <strong>ordre = maîtrise</strong></li>
+      <li>L'environnement peut créer un doute : hygiène, précision, sérieux</li>
+    </ul>
+  </div>
+
+  <div class="diagnostic-box danger">
+    <h3>C) Expérience client inexistante / non standardisée</h3>
+    <ul>
+      <li>Pas de parcours clair, pas de process, pas de rituels</li>
+      <li>En solo, c'est le meilleur moyen d'être débordé, irrégulier</li>
+      <li>Perte de ventes "silencieuses" (relances, SAV, second équipement, lentilles, solaire)</li>
+    </ul>
+  </div>
+
+  <div class="diagnostic-box danger">
+    <h3>D) Visibilité locale sous-exploitée</h3>
+    <ul>
+      <li>Vitrine peu renouvelée</li>
+      <li>Réseaux sociaux très faibles et irréguliers</li>
+      <li>L'emplacement est bon, il y a du passage → il faut transformer ce flux en visites</li>
+    </ul>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- PRIORITÉS D'ACTION -->
+  <h2 class="section-title">Priorités d'action (ordre logique)</h2>
+  <p class="section-desc">Stratégie de résolution — du plus critique au structurant</p>
+
+  <div class="priorities-grid">
+    <div class="priority-item">
+      <div class="priority-header">
+        <div class="priority-number">1</div>
+        <div class="priority-title">Remettre de la "maîtrise" visible</div>
+      </div>
+      <div class="priority-desc">
+        <strong>Objectif :</strong> que le client ressente "c'est pro" dès l'entrée jusqu'à la salle d'examen.<br><br>
+        • Ranger / organiser l'atelier, <strong>définir des zones</strong> (réparation, montage, stock, SAV)<br>
+        • <strong>Masquer / sécuriser</strong> la traversée vers la salle (cloison légère, rideau propre, signalétique, chemin "client")<br>
+        • Retirer / réparer / neutraliser les machines en panne (une machine HS visible = message "on bricole")<br>
+        • Standard "netteté" : sol, plans, comptoir, miroirs, éclairage<br><br>
+        👉 <strong>C'est LE levier le plus rapide</strong> pour améliorer la conversion et la perception qualité.
+      </div>
+    </div>
+
+    <div class="priority-item">
+      <div class="priority-header">
+        <div class="priority-number">2</div>
+        <div class="priority-title">Créer un mini "tableau de bord"</div>
+      </div>
+      <div class="priority-desc">
+        <strong>Objectif :</strong> passer de "je pense" à "je sais".<br><br>
+        À extraire d'I-Voir Net (ou a minima suivre manuellement) :<br>
+        • nombre de clients / mois<br>
+        • panier moyen réel<br>
+        • mix montures / verres / lentilles<br>
+        • taux de remakes / SAV<br>
+        • top 20 montures vendues<br>
+        • CA par famille (optique, solaire, lentilles)<br>
+        • idéalement : marge / coefficient moyen<br><br>
+        ➡️ Sans ça, on ne peut pas choisir une gamme, un podium, ni une stratégie prix efficace.
+      </div>
+    </div>
+
+    <div class="priority-item">
+      <div class="priority-header">
+        <div class="priority-number">3</div>
+        <div class="priority-title">Définir cohérence de marque + expérience client simple</div>
+      </div>
+      <div class="priority-desc">
+        <strong>Objectif :</strong> un magasin lisible et rassurant, même avec 1 personne.<br><br>
+        • Positionnement en 1 phrase (ex : "vision + lentilles + conseil expert, sans stress")<br>
+        • 1 trame d'accueil + découverte + restitution + conclusion (process de vente)<br>
+        • 1 rituel de suivi client (appel / SMS J+2, contrôle, avis Google)<br>
+        • 1 routine vitrine : changement toutes les 2 à 4 semaines (même petit)
+      </div>
+    </div>
+
+    <div class="priority-item">
+      <div class="priority-header">
+        <div class="priority-number">4</div>
+        <div class="priority-title">Visibilité locale : vitrine + Google + synergies</div>
+      </div>
+      <div class="priority-desc">
+        • Vitrine : 1 thème, 1 offre, 1 message, 1 produit phare (pas un patchwork)<br>
+        • Google : objectif <strong>+50 avis en 6 mois</strong> (avec demande systématique)<br>
+        • Partenariats simples :<br>
+        &nbsp;&nbsp;→ kiné : lunettes sport / anti-lumière / posture<br>
+        &nbsp;&nbsp;→ pharmacie : sécheresse oculaire, lentilles, solaires UV<br>
+        &nbsp;&nbsp;→ coiffeur : style / visagisme / relooking
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- PARTIE 3 : PLAN D'ACTION DOUBLE -->
+  <h2 class="section-title">Plan d'action à cocher</h2>
+  <p class="section-desc">Actions long terme (vision stratégique) — cochez au fur et à mesure de la progression</p>
 
   <div class="actions-grid" id="actionsGrid">
-
-    <!-- QUICK WINS -->
     <div class="action-item" data-id="1" onclick="toggleAction(this)">
       <div class="action-checkbox-col">
         <div class="action-checkbox">
-          <svg viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M1 5L4.5 8.5L11 1" stroke="#0d0f12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
+          <svg viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
       </div>
       <div class="action-content">
@@ -1015,9 +1215,7 @@
     <div class="action-item" data-id="2" onclick="toggleAction(this)">
       <div class="action-checkbox-col">
         <div class="action-checkbox">
-          <svg viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M1 5L4.5 8.5L11 1" stroke="#0d0f12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
+          <svg viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
       </div>
       <div class="action-content">
@@ -1025,7 +1223,7 @@
           <span class="action-title">Mettre en place une demande d'avis systématique</span>
           <span class="action-tag tag-quick">Quick win</span>
         </div>
-        <p class="action-desc">À chaque livraison, demander un avis Google via QR code ou SMS. Un client satisfait qui laisse un avis = notoriété gratuite dans toute la zone.</p>
+        <p class="action-desc">À chaque livraison, demander un avis Google via QR code ou SMS. Un client satisfait qui laisse un avis = notoriété gratuite.</p>
       </div>
       <div class="action-meta">
         <span class="action-impact">+15 K€</span>
@@ -1036,9 +1234,7 @@
     <div class="action-item" data-id="3" onclick="toggleAction(this)">
       <div class="action-checkbox-col">
         <div class="action-checkbox">
-          <svg viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M1 5L4.5 8.5L11 1" stroke="#0d0f12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
+          <svg viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
       </div>
       <div class="action-content">
@@ -1046,7 +1242,7 @@
           <span class="action-title">Créer un fichier client structuré avec dates de renouvellement</span>
           <span class="action-tag tag-quick">Quick win</span>
         </div>
-        <p class="action-desc">Cycle moyen de renouvellement : 2 ans. Si 300 clients actifs = 150 renouvellements/an à relancer. Sans suivi, ce CA part à la concurrence sans bruit.</p>
+        <p class="action-desc">Cycle moyen : 2 ans. Si 300 clients actifs = 150 renouvellements/an à relancer. Sans suivi, ce CA part à la concurrence.</p>
       </div>
       <div class="action-meta">
         <span class="action-impact">+40 K€</span>
@@ -1054,21 +1250,18 @@
       </div>
     </div>
 
-    <!-- MOYEN TERME -->
     <div class="action-item" data-id="4" onclick="toggleAction(this)">
       <div class="action-checkbox-col">
         <div class="action-checkbox">
-          <svg viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M1 5L4.5 8.5L11 1" stroke="#0d0f12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
+          <svg viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
       </div>
       <div class="action-content">
         <div class="action-header">
-          <span class="action-title">Formaliser le process de vente — anamnèse et argumentation</span>
+          <span class="action-title">Formaliser le process de vente</span>
           <span class="action-tag tag-moyen">3 mois</span>
         </div>
-        <p class="action-desc">Aucun process écrit actuellement. Un script d'anamnèse + argumentation solaire + 2ème paire = +50 à +80 € de panier moyen sans pression de vente.</p>
+        <p class="action-desc">Aucun process écrit actuellement. Script d'anamnèse + argumentation solaire + 2ème paire = +50 à +80 € de panier moyen.</p>
       </div>
       <div class="action-meta">
         <span class="action-impact">+35 K€</span>
@@ -1079,17 +1272,15 @@
     <div class="action-item" data-id="5" onclick="toggleAction(this)">
       <div class="action-checkbox-col">
         <div class="action-checkbox">
-          <svg viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M1 5L4.5 8.5L11 1" stroke="#0d0f12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
+          <svg viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
       </div>
       <div class="action-content">
         <div class="action-header">
-          <span class="action-title">Développer l'axe solaires — argumentaire spécifique</span>
+          <span class="action-title">Développer l'axe solaires</span>
           <span class="action-tag tag-moyen">3 mois</span>
         </div>
-        <p class="action-desc">La zone bénéficie d'une forte pratique outdoor (montagne, lac). Créer un espace solaires dédié + argumentaire santé visuelle = levier de CA additionnel significatif.</p>
+        <p class="action-desc">Zone montagne/lac → forte pratique outdoor. Espace solaires dédié + argumentaire santé visuelle = levier CA additionnel.</p>
       </div>
       <div class="action-meta">
         <span class="action-impact">+25 K€</span>
@@ -1100,9 +1291,7 @@
     <div class="action-item" data-id="6" onclick="toggleAction(this)">
       <div class="action-checkbox-col">
         <div class="action-checkbox">
-          <svg viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M1 5L4.5 8.5L11 1" stroke="#0d0f12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
+          <svg viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
       </div>
       <div class="action-content">
@@ -1110,7 +1299,7 @@
           <span class="action-title">Lancer une ligne éditoriale réseaux sociaux</span>
           <span class="action-tag tag-moyen">3 mois</span>
         </div>
-        <p class="action-desc">Actuellement irrégulier. Créer 3 types de contenus récurrents : coulisses du métier, conseils visuels, nouveautés. Objectif : 1 post Instagram/semaine avec ligne visuelle définie.</p>
+        <p class="action-desc">Actuellement irrégulier. 3 types de contenus récurrents : coulisses, conseils, nouveautés. Objectif : 1 post/semaine.</p>
       </div>
       <div class="action-meta">
         <span class="action-impact">+18 K€</span>
@@ -1121,9 +1310,7 @@
     <div class="action-item" data-id="7" onclick="toggleAction(this)">
       <div class="action-checkbox-col">
         <div class="action-checkbox">
-          <svg viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M1 5L4.5 8.5L11 1" stroke="#0d0f12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
+          <svg viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
       </div>
       <div class="action-content">
@@ -1131,7 +1318,7 @@
           <span class="action-title">Optimiser la rotation des stocks montures</span>
           <span class="action-tag tag-moyen">6 mois</span>
         </div>
-        <p class="action-desc">Rotation lente (> 12 mois) = capital immobilisé inutilement. Identifier les 20 % de références qui font 80 % des ventes et recentrer l'assortiment sur ces best-sellers.</p>
+        <p class="action-desc">Rotation lente (> 12 mois) = capital immobilisé. Identifier les 20 % de références qui font 80 % des ventes.</p>
       </div>
       <div class="action-meta">
         <span class="action-impact">Tréso</span>
@@ -1139,13 +1326,10 @@
       </div>
     </div>
 
-    <!-- LONG TERME -->
     <div class="action-item" data-id="8" onclick="toggleAction(this)">
       <div class="action-checkbox-col">
         <div class="action-checkbox">
-          <svg viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M1 5L4.5 8.5L11 1" stroke="#0d0f12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
+          <svg viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
       </div>
       <div class="action-content">
@@ -1153,7 +1337,7 @@
           <span class="action-title">Structurer les moments WOW du parcours client</span>
           <span class="action-tag tag-long">6-12 mois</span>
         </div>
-        <p class="action-desc">Aucun moment différenciant formalisé actuellement. Définir 3 à 5 rituels mémorables (accueil, remise, suivi SAV) pour transformer chaque client en ambassadeur actif.</p>
+        <p class="action-desc">Aucun moment différenciant formalisé. Définir 3 à 5 rituels mémorables pour transformer chaque client en ambassadeur.</p>
       </div>
       <div class="action-meta">
         <span class="action-impact">Fidél.</span>
@@ -1164,9 +1348,7 @@
     <div class="action-item" data-id="9" onclick="toggleAction(this)">
       <div class="action-checkbox-col">
         <div class="action-checkbox">
-          <svg viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M1 5L4.5 8.5L11 1" stroke="#0d0f12" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
+          <svg viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
       </div>
       <div class="action-content">
@@ -1174,67 +1356,140 @@
           <span class="action-title">Envisager le premier recrutement</span>
           <span class="action-tag tag-long">12 mois</span>
         </div>
-        <p class="action-desc">Actuellement 0 salarié : le plafond de CA est lié au temps disponible de Philippe. Au-delà de ~250-280 K€, un premier poste (apprenti ou temps partiel) devient rentable et débloque la croissance.</p>
+        <p class="action-desc">0 salarié : le plafond de CA est lié au temps disponible. Au-delà de ~250-280 K€, un premier poste devient rentable.</p>
       </div>
       <div class="action-meta">
         <span class="action-impact">+150 K€</span>
         <span class="action-impact-label">capacité</span>
       </div>
     </div>
+  </div>
 
+  <div class="divider"></div>
+
+  <!-- PLAN 30 JOURS -->
+  <h2 class="section-title">Plan d'action 30 jours (exécution immédiate)</h2>
+  <p class="section-desc">Feuille de route opérationnelle — semaine par semaine</p>
+
+  <div class="plan-30-grid">
+    <div class="week-card">
+      <div class="week-header">
+        <div class="week-number">S1</div>
+        <div class="week-title">Semaine 1</div>
+      </div>
+      <ul class="week-tasks">
+        <li>Grand tri + rangement atelier + suppression visuelle des éléments "bazar"</li>
+        <li>Décision machines : réparer / enlever / cacher proprement</li>
+        <li>Chemin client vers salle d'examen : propre + signalétique</li>
+      </ul>
+    </div>
+
+    <div class="week-card">
+      <div class="week-header">
+        <div class="week-number">S2</div>
+        <div class="week-title">Semaine 2</div>
+      </div>
+      <ul class="week-tasks">
+        <li>Extraction chiffres I-Voir Net (même basique)</li>
+        <li>Création d'un mini tableau (Google Sheet) + rituel : 15 min / semaine</li>
+      </ul>
+    </div>
+
+    <div class="week-card">
+      <div class="week-header">
+        <div class="week-number">S3</div>
+        <div class="week-title">Semaine 3</div>
+      </div>
+      <ul class="week-tasks">
+        <li>Écrire le parcours client (1 page) + 5 phrases types</li>
+        <li>Mettre en place demande d'avis Google systématique (QR code + phrase)</li>
+      </ul>
+    </div>
+
+    <div class="week-card">
+      <div class="week-header">
+        <div class="week-number">S4</div>
+        <div class="week-title">Semaine 4</div>
+      </div>
+      <ul class="week-tasks">
+        <li>Vitrine : nouveau thème + message clair</li>
+        <li>6 posts simples (2/semaine) : coulisses propres / expertise lentilles / avis client / vitrine</li>
+      </ul>
+    </div>
   </div>
 
 </main>
 
-<!-- ═══════════════════════════════════════════ FOOTER -->
+<!-- ═══ FOOTER ═══ -->
 <footer>
   <div>
     <div class="footer-brand">Dynamis Académie</div>
-    <div class="footer-note" style="margin-top: 6px;">Document personnalisé pour L'Opticien de Poisy — Confidentiel</div>
+    <div class="footer-note" style="margin-top:6px">Document personnalisé pour L'Opticien de Poisy — Confidentiel</div>
   </div>
-  <div style="text-align: right;">
+  <div style="text-align:right">
     <div class="footer-note">Sources : Octika/GfK 2025 · Xerfi 2025 · INSEE 2022-2024</div>
-    <div class="footer-note" style="margin-top: 4px;">Données concurrents : Google Maps, Février 2026</div>
+    <div class="footer-note" style="margin-top:4px">Données concurrents : Google Maps, Février 2026</div>
   </div>
 </footer>
 
 <script>
-  const STORAGE_KEY = 'dynamis_poisy_actions';
+const STORAGE_KEY = 'dynamis_poisy_actions';
+const PASSWORD = 'opticiendepoisy';
 
-  function loadState() {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      return saved ? JSON.parse(saved) : [];
-    } catch { return []; }
+function checkPassword() {
+  const input = document.getElementById('passwordInput');
+  const error = document.getElementById('errorMsg');
+  if (input.value === PASSWORD) {
+    document.getElementById('passwordOverlay').classList.add('hidden');
+    localStorage.setItem('dynamis_authenticated', 'true');
+  } else {
+    error.style.display = 'block';
+    input.value = '';
   }
+}
 
-  function saveState(ids) {
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(ids)); } catch {}
-  }
+document.getElementById('passwordInput').addEventListener('keypress', function(e) {
+  if (e.key === 'Enter') checkPassword();
+});
 
-  function updateProgress() {
-    const total  = document.querySelectorAll('.action-item').length;
-    const done   = document.querySelectorAll('.action-item.done').length;
-    const pct    = total > 0 ? Math.round((done / total) * 100) : 0;
-    document.getElementById('progressFill').style.width = pct + '%';
-    document.getElementById('progressPct').textContent  = pct + ' %';
-  }
+// Check si déjà authentifié
+if (localStorage.getItem('dynamis_authenticated') === 'true') {
+  document.getElementById('passwordOverlay').classList.add('hidden');
+}
 
-  function toggleAction(el) {
-    el.classList.toggle('done');
-    const doneIds = [...document.querySelectorAll('.action-item.done')]
-      .map(e => e.dataset.id);
-    saveState(doneIds);
-    updateProgress();
-  }
+function loadState() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    return saved ? JSON.parse(saved) : [];
+  } catch { return []; }
+}
 
-  // Restore state on load
-  const saved = loadState();
-  saved.forEach(id => {
-    const el = document.querySelector(`.action-item[data-id="${id}"]`);
-    if (el) el.classList.add('done');
-  });
+function saveState(ids) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(ids)); } catch {}
+}
+
+function updateProgress() {
+  const total = document.querySelectorAll('.action-item').length;
+  const done  = document.querySelectorAll('.action-item.done').length;
+  const pct   = total > 0 ? Math.round((done / total) * 100) : 0;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressPct').textContent  = pct + ' %';
+}
+
+function toggleAction(el) {
+  el.classList.toggle('done');
+  const doneIds = [...document.querySelectorAll('.action-item.done')]
+    .map(e => e.dataset.id);
+  saveState(doneIds);
   updateProgress();
+}
+
+const saved = loadState();
+saved.forEach(id => {
+  const el = document.querySelector(`.action-item[data-id="${id}"]`);
+  if (el) el.classList.add('done');
+});
+updateProgress();
 </script>
 
 </body>
